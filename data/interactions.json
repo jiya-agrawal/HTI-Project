@@ -1,0 +1,791 @@
+[
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:58:58.369812",
+    "details": {
+      "length": 1
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:58:58.867951",
+    "details": {
+      "length": 2
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:58:59.135395",
+    "details": {
+      "length": 4
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:00.395443",
+    "details": {
+      "length": 5
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:01.429341",
+    "details": {
+      "length": 6
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:01.678258",
+    "details": {
+      "length": 7
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:01.847804",
+    "details": {
+      "length": 8
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:02.145059",
+    "details": {
+      "length": 9
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:02.316298",
+    "details": {
+      "length": 10
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:02.502126",
+    "details": {
+      "length": 11
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:02.653085",
+    "details": {
+      "length": 12
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:02.809884",
+    "details": {
+      "length": 13
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:02.933773",
+    "details": {
+      "length": 14
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:03.043196",
+    "details": {
+      "length": 15
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:03.796545",
+    "details": {
+      "length": 16
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:04.280573",
+    "details": {
+      "length": 17
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:04.540298",
+    "details": {
+      "length": 18
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:04.760558",
+    "details": {
+      "length": 17
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:05.353403",
+    "details": {
+      "length": 18
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:05.476472",
+    "details": {
+      "length": 19
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:05.801415",
+    "details": {
+      "length": 20
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:06.246540",
+    "details": {
+      "length": 21
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:06.495062",
+    "details": {
+      "length": 22
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:06.735161",
+    "details": {
+      "length": 21
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:07.491536",
+    "details": {
+      "length": 22
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:07.631520",
+    "details": {
+      "length": 23
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:07.761753",
+    "details": {
+      "length": 24
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 3,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-10T16:59:08.440920",
+    "details": {
+      "length": 25
+    }
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 2,
+    "interaction_type": "approve_ai_solution",
+    "timestamp": "2025-11-10T17:00:10.515405",
+    "details": {}
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 1,
+    "interaction_type": "edit_ai_solution",
+    "timestamp": "2025-11-10T17:00:27.543839",
+    "details": {}
+  },
+  {
+    "participant_id": "P001",
+    "puzzle_id": 1,
+    "interaction_type": "accept_ai_solution",
+    "timestamp": "2025-11-10T17:00:45.846079",
+    "details": {}
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 1,
+    "interaction_type": "intervene",
+    "timestamp": "2025-11-11T13:51:13.229079",
+    "details": {}
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 1,
+    "interaction_type": "approve_ai_solution",
+    "timestamp": "2025-11-11T13:51:16.513048",
+    "details": {}
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:00.585249",
+    "details": {
+      "length": 1
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:00.890546",
+    "details": {
+      "length": 2
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:01.401336",
+    "details": {
+      "length": 3
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:01.671261",
+    "details": {
+      "length": 4
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:01.723244",
+    "details": {
+      "length": 5
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:02.422322",
+    "details": {
+      "length": 6
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:02.696577",
+    "details": {
+      "length": 7
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:03.129665",
+    "details": {
+      "length": 8
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:03.394024",
+    "details": {
+      "length": 9
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:03.602167",
+    "details": {
+      "length": 10
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:03.673432",
+    "details": {
+      "length": 11
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:03.786520",
+    "details": {
+      "length": 12
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:03.993642",
+    "details": {
+      "length": 13
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:04.203040",
+    "details": {
+      "length": 14
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:04.352486",
+    "details": {
+      "length": 15
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:04.589474",
+    "details": {
+      "length": 16
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:05.916160",
+    "details": {
+      "length": 17
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:06.546814",
+    "details": {
+      "length": 18
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:06.790331",
+    "details": {
+      "length": 19
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:06.906397",
+    "details": {
+      "length": 20
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:06.983094",
+    "details": {
+      "length": 21
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:07.110733",
+    "details": {
+      "length": 22
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:07.235581",
+    "details": {
+      "length": 23
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:07.843311",
+    "details": {
+      "length": 24
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:08.452254",
+    "details": {
+      "length": 25
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:08.559948",
+    "details": {
+      "length": 26
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:08.707857",
+    "details": {
+      "length": 27
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:08.736998",
+    "details": {
+      "length": 28
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:08.879819",
+    "details": {
+      "length": 29
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:09.016683",
+    "details": {
+      "length": 30
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:09.207560",
+    "details": {
+      "length": 31
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:09.277710",
+    "details": {
+      "length": 32
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:09.427919",
+    "details": {
+      "length": 33
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:09.581979",
+    "details": {
+      "length": 34
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:11.822801",
+    "details": {
+      "length": 35
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:12.326121",
+    "details": {
+      "length": 36
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:12.499546",
+    "details": {
+      "length": 37
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:12.587575",
+    "details": {
+      "length": 38
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:12.649349",
+    "details": {
+      "length": 39
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:13.022837",
+    "details": {
+      "length": 40
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:13.475051",
+    "details": {
+      "length": 41
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:13.741032",
+    "details": {
+      "length": 40
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:13.787683",
+    "details": {
+      "length": 39
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:13.943731",
+    "details": {
+      "length": 38
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:14.112768",
+    "details": {
+      "length": 37
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:14.271497",
+    "details": {
+      "length": 36
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:14.551912",
+    "details": {
+      "length": 35
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:15.082297",
+    "details": {
+      "length": 36
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:15.205336",
+    "details": {
+      "length": 37
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:15.301865",
+    "details": {
+      "length": 38
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:15.318867",
+    "details": {
+      "length": 39
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:15.490381",
+    "details": {
+      "length": 40
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:15.991588",
+    "details": {
+      "length": 41
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:16.412244",
+    "details": {
+      "length": 42
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 4,
+    "interaction_type": "text_input",
+    "timestamp": "2025-11-11T13:52:16.522403",
+    "details": {
+      "length": 43
+    }
+  },
+  {
+    "participant_id": "P002",
+    "puzzle_id": 3,
+    "interaction_type": "reject_ai_solution",
+    "timestamp": "2025-11-11T13:52:34.214131",
+    "details": {}
+  }
+]

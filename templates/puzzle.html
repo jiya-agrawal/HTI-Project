@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTI Experiment - Puzzle {{ step }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: {{ (step / 4) * 100 }}%"></div>
+        </div>
+        
+        <div class="progress-indicator">
+            <span>Puzzle {{ step }} of 4 | LOA {{ loa }}</span>
+        </div>
+        
+        <div class="puzzle-container">
+            <!-- Puzzle Prompt Section -->
+            <div class="puzzle-section">
+                <h2>🧩 Puzzle {{ step }}</h2>
+                <div class="puzzle-prompt">
+                    {{ puzzle.prompt | safe }}
+                </div>
+                
+                <div class="timer-display">
+                    <span id="timer">⏱️ Time: 00:00</span>
+                </div>
+            </div>
+            
+            <!-- AI Assistant Section (Hidden for LOA 1) -->
+            {% if loa != 1 %}
+            <div class="ai-section">
+                <h3>🤖 AI Assistant</h3>
+                
+                <div class="ai-reasoning">
+                    <h4>AI Reasoning:</h4>
+                    <p>{{ ai_reasoning }}</p>
+                </div>
+                
+                <div class="ai-solution">
+                    <h4>AI Solution:</h4>
+                    <p class="ai-answer">{{ ai_solution }}</p>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Interaction Area (varies by LOA) -->
+            <div class="interaction-section">
+                {% if loa == 1 %}
+                <!-- LOA 1: Manual Input -->
+                <div class="loa1-controls">
+                    <h3>Your Solution:</h3>
+                    <textarea id="user-solution" rows="4" placeholder="Enter your complete solution here..."></textarea>
+                </div>
+                
+                {% elif loa == 2 %}
+                <!-- LOA 2: Accept/Reject/Edit -->
+                <div class="loa2-controls">
+                    <h3>Review AI Suggestion:</h3>
+                    <div class="button-group">
+                        <button id="accept-btn" class="btn btn-success">✓ Accept</button>
+                        <button id="reject-btn" class="btn btn-danger">✗ Reject</button>
+                        <button id="edit-btn" class="btn btn-warning">✎ Edit</button>
+                    </div>
+                    
+                    <div id="edit-area" style="display: none;">
+                        <h4>Edit Solution:</h4>
+                        <textarea id="edited-solution" rows="4">{{ ai_solution }}</textarea>
+                    </div>
+                    
+                    <div id="reject-area" style="display: none;">
+                        <h4>Enter Your Solution:</h4>
+                        <textarea id="rejected-solution" rows="4" placeholder="Enter your own solution..."></textarea>
+                    </div>
+                </div>
+                
+                {% elif loa == 3 %}
+                <!-- LOA 3: Review/Approve/Intervene -->
+                <div class="loa3-controls">
+                    <h3>Review AI Solution:</h3>
+                    <div class="current-solution">
+                        <strong>Current Solution:</strong>
+                        <div id="current-answer" class="answer-display">{{ ai_solution }}</div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button id="approve-btn" class="btn btn-success">✓ Approve</button>
+                        <button id="intervene-btn" class="btn btn-warning">⚠ Intervene</button>
+                    </div>
+                    
+                    <div id="intervention-area" style="display: none;">
+                        <h4>Provide Corrected Solution:</h4>
+                        <textarea id="intervention-solution" rows="4">{{ ai_solution }}</textarea>
+                    </div>
+                </div>
+                
+                {% elif loa == 4 %}
+                <!-- LOA 4: Observe Only -->
+                <div class="loa4-controls">
+                    <h3>Final Solution (AI Automated):</h3>
+                    <div class="final-solution-display">
+                        {{ ai_solution }}
+                    </div>
+                    <p class="info-text">The AI has completed the puzzle automatically. Please observe the solution above.</p>
+                </div>
+                {% endif %}
+                
+                <!-- Submit Button (appears after action taken) -->
+                <div id="submit-container" style="display: none; margin-top: 20px;">
+                    <button id="submit-btn" class="btn btn-primary">Continue to Questionnaire →</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Post-task Questionnaire Modal -->
+        <div id="questionnaire-modal" class="modal">
+            <div class="modal-content">
+                <h2>Post-Task Questions</h2>
+                
+                <div class="question">
+                    <label>How confident are you in the final answer?</label>
+                    <div class="likert-scale">
+                        <span>1 (Not at all)</span>
+                        <input type="radio" name="confidence" value="1" required>
+                        <input type="radio" name="confidence" value="2">
+                        <input type="radio" name="confidence" value="3">
+                        <input type="radio" name="confidence" value="4">
+                        <input type="radio" name="confidence" value="5">
+                        <input type="radio" name="confidence" value="6">
+                        <input type="radio" name="confidence" value="7">
+                        <span>7 (Extremely)</span>
+                    </div>
+                </div>
+                
+                {% if loa != 1 %}
+                <div class="question">
+                    <label>How much did you trust the AI's reasoning?</label>
+                    <div class="likert-scale">
+                        <span>1 (Not at all)</span>
+                        <input type="radio" name="trust" value="1" required>
+                        <input type="radio" name="trust" value="2">
+                        <input type="radio" name="trust" value="3">
+                        <input type="radio" name="trust" value="4">
+                        <input type="radio" name="trust" value="5">
+                        <input type="radio" name="trust" value="6">
+                        <input type="radio" name="trust" value="7">
+                        <span>7 (Completely)</span>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <label>How aware did you feel of what the AI was doing?</label>
+                    <div class="likert-scale">
+                        <span>1 (Not aware)</span>
+                        <input type="radio" name="awareness" value="1" required>
+                        <input type="radio" name="awareness" value="2">
+                        <input type="radio" name="awareness" value="3">
+                        <input type="radio" name="awareness" value="4">
+                        <input type="radio" name="awareness" value="5">
+                        <input type="radio" name="awareness" value="6">
+                        <input type="radio" name="awareness" value="7">
+                        <span>7 (Very aware)</span>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <button id="submit-questionnaire-btn" class="btn btn-primary">Submit & Continue</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Data collection variables
+        const LOA = {{ loa }};
+        const puzzleStartTime = Date.now();
+        let decisionStartTime = null;
+        let interactionCount = 0;
+        let finalAnswer = '';
+        let acceptedAdvice = false;
+        let overridden = false;
+        
+        // Timer
+        let timerInterval;
+        let elapsedSeconds = 0;
+        
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                elapsedSeconds++;
+                const minutes = Math.floor(elapsedSeconds / 60);
+                const seconds = elapsedSeconds % 60;
+                document.getElementById('timer').textContent = 
+                    `⏱️ Time: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }, 1000);
+        }
+        
+        // Log interaction
+        async function logInteraction(type, details = {}) {
+            interactionCount++;
+            await fetch('/log-interaction', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    type: type,
+                    details: details
+                })
+            });
+        }
+        
+        // Show submit button
+        function showSubmitButton() {
+            document.getElementById('submit-container').style.display = 'block';
+        }
+        
+        // LOA 1: Manual Control
+        if (LOA === 1) {
+            decisionStartTime = Date.now();
+            const textarea = document.getElementById('user-solution');
+            
+            textarea.addEventListener('input', () => {
+                logInteraction('text_input', { length: textarea.value.length });
+            });
+            
+            textarea.addEventListener('change', () => {
+                finalAnswer = textarea.value;
+                if (finalAnswer.trim().length > 0) {
+                    showSubmitButton();
+                }
+            });
+        }
+        
+        // LOA 2: Management by Consent
+        if (LOA === 2) {
+            decisionStartTime = Date.now();
+            
+            document.getElementById('accept-btn').addEventListener('click', () => {
+                logInteraction('accept_ai_solution');
+                finalAnswer = '{{ ai_solution }}';
+                acceptedAdvice = true;
+                showSubmitButton();
+                document.querySelectorAll('.loa2-controls button').forEach(btn => btn.disabled = true);
+            });
+            
+            document.getElementById('reject-btn').addEventListener('click', () => {
+                logInteraction('reject_ai_solution');
+                document.getElementById('reject-area').style.display = 'block';
+                acceptedAdvice = false;
+                overridden = true;
+                
+                const textarea = document.getElementById('rejected-solution');
+                textarea.addEventListener('change', () => {
+                    finalAnswer = textarea.value;
+                    if (finalAnswer.trim().length > 0) {
+                        showSubmitButton();
+                    }
+                });
+            });
+            
+            document.getElementById('edit-btn').addEventListener('click', () => {
+                logInteraction('edit_ai_solution');
+                document.getElementById('edit-area').style.display = 'block';
+                overridden = true;
+                
+                const textarea = document.getElementById('edited-solution');
+                textarea.addEventListener('change', () => {
+                    finalAnswer = textarea.value;
+                    if (finalAnswer.trim().length > 0) {
+                        showSubmitButton();
+                    }
+                });
+            });
+        }
+        
+        // LOA 3: Management by Exception
+        if (LOA === 3) {
+            decisionStartTime = Date.now();
+            
+            document.getElementById('approve-btn').addEventListener('click', () => {
+                logInteraction('approve_ai_solution');
+                finalAnswer = '{{ ai_solution }}';
+                acceptedAdvice = true;
+                showSubmitButton();
+                document.querySelectorAll('.loa3-controls button').forEach(btn => btn.disabled = true);
+            });
+            
+            document.getElementById('intervene-btn').addEventListener('click', () => {
+                logInteraction('intervene');
+                document.getElementById('intervention-area').style.display = 'block';
+                overridden = true;
+                
+                const textarea = document.getElementById('intervention-solution');
+                textarea.addEventListener('change', () => {
+                    finalAnswer = textarea.value;
+                    if (finalAnswer.trim().length > 0) {
+                        showSubmitButton();
+                    }
+                });
+            });
+        }
+        
+        // LOA 4: Full Automation
+        if (LOA === 4) {
+            finalAnswer = '{{ ai_solution }}';
+            acceptedAdvice = true;
+            // Auto-show submit button after a brief delay
+            setTimeout(() => {
+                showSubmitButton();
+            }, 2000);
+        }
+        
+        // Submit button handler
+        document.getElementById('submit-btn').addEventListener('click', () => {
+            if (!finalAnswer || finalAnswer.trim().length === 0) {
+                alert('Please provide a solution before continuing.');
+                return;
+            }
+            
+            clearInterval(timerInterval);
+            document.getElementById('questionnaire-modal').style.display = 'flex';
+        });
+        
+        // Questionnaire submission
+        document.getElementById('submit-questionnaire-btn').addEventListener('click', async () => {
+            const confidence = document.querySelector('input[name="confidence"]:checked');
+            const trust = LOA !== 1 ? document.querySelector('input[name="trust"]:checked') : null;
+            const awareness = LOA !== 1 ? document.querySelector('input[name="awareness"]:checked') : null;
+            
+            if (!confidence || (LOA !== 1 && (!trust || !awareness))) {
+                alert('Please answer all questions before continuing.');
+                return;
+            }
+            
+            const decisionLatency = decisionStartTime ? (Date.now() - decisionStartTime) / 1000 : 0;
+            
+            const submissionData = {
+                final_answer: finalAnswer,
+                decision_latency: decisionLatency,
+                accepted_advice: acceptedAdvice,
+                overridden: overridden,
+                confidence_score: parseInt(confidence.value),
+                trust_score: trust ? parseInt(trust.value) : 0,
+                awareness_score: awareness ? parseInt(awareness.value) : 0
+            };
+            
+            try {
+                const response = await fetch('/submit-puzzle', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(submissionData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    if (data.next_step === 'loa_intro') {
+                        window.location.href = '/loa-intro';
+                    } else {
+                        window.location.href = '/final';
+                    }
+                }
+            } catch (error) {
+                alert('Error submitting data. Please try again.');
+            }
+        });
+        
+        // Start timer when page loads
+        startTimer();
+    </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTI Experiment - LOA Introduction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: {{ (step / 4) * 100 }}%"></div>
+        </div>
+        
+        <div class="progress-indicator">
+            <span>Puzzle {{ step }} of 4</span>
+        </div>
+        
+        <div class="loa-intro-card">
+            <h1>{{ loa_info.title }}</h1>
+            
+            <div class="loa-description">
+                <p class="description-text">{{ loa_info.description }}</p>
+            </div>
+            
+            <div class="loa-instructions">
+                <h3>📋 Instructions:</h3>
+                <p>{{ loa_info.instructions }}</p>
+            </div>
+            
+            <div class="loa-details">
+                {% if loa == 1 %}
+                <div class="detail-item">
+                    <strong>Your Role:</strong> Full control - solve the puzzle independently
+                </div>
+                <div class="detail-item">
+                    <strong>AI Role:</strong> No assistance provided
+                </div>
+                {% elif loa == 2 %}
+                <div class="detail-item">
+                    <strong>Your Role:</strong> Decision maker - accept, reject, or modify AI suggestions
+                </div>
+                <div class="detail-item">
+                    <strong>AI Role:</strong> Advisor - provides suggestions for your review
+                </div>
+                {% elif loa == 3 %}
+                <div class="detail-item">
+                    <strong>Your Role:</strong> Supervisor - review and intervene if needed
+                </div>
+                <div class="detail-item">
+                    <strong>AI Role:</strong> Executor - automatically solves but you can override
+                </div>
+                {% elif loa == 4 %}
+                <div class="detail-item">
+                    <strong>Your Role:</strong> Observer - view the AI's solution process
+                </div>
+                <div class="detail-item">
+                    <strong>AI Role:</strong> Autonomous - handles everything automatically
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="button-container">
+                <button id="begin-puzzle-btn" class="btn btn-primary">Begin Puzzle</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('begin-puzzle-btn').addEventListener('click', () => {
+            window.location.href = '/puzzle';
+        });
+    </script>
+</body>
+</html>

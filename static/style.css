@@ -1,0 +1,510 @@
+/* HTI Experiment - Stylesheet */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    line-height: 1.6;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Welcome Screen */
+.welcome-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.welcome-card {
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    max-width: 800px;
+    width: 100%;
+}
+
+.welcome-card h1 {
+    color: #667eea;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.study-info {
+    margin: 30px 0;
+}
+
+.study-info h2 {
+    color: #764ba2;
+    margin-bottom: 15px;
+}
+
+.study-info h3 {
+    color: #555;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.study-info ul {
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+.consent-box {
+    background: #f0f4ff;
+    border-left: 4px solid #667eea;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 4px;
+}
+
+.consent-box p {
+    margin-bottom: 10px;
+}
+
+.participant-form {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.participant-form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.participant-form input[type="text"] {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.participant-form input[type="text"]:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.help-text {
+    font-size: 14px;
+    color: #777;
+    margin: 10px 0;
+}
+
+.error-message {
+    color: #d32f2f;
+    font-size: 14px;
+    margin-top: 10px;
+    min-height: 20px;
+}
+
+/* Buttons */
+.btn {
+    padding: 12px 30px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    margin: 5px;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: #667eea;
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: #5568d3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: #5a6268;
+}
+
+.btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.btn-success:hover:not(:disabled) {
+    background: #218838;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+    background: #c82333;
+}
+
+.btn-warning {
+    background: #ffc107;
+    color: #333;
+}
+
+.btn-warning:hover:not(:disabled) {
+    background: #e0a800;
+}
+
+/* Progress Bar */
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #28a745;
+    transition: width 0.3s ease;
+}
+
+.progress-indicator {
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+/* LOA Introduction */
+.loa-intro-card {
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    margin-top: 20px;
+}
+
+.loa-intro-card h1 {
+    color: #667eea;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.loa-description {
+    background: #f0f4ff;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.description-text {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #444;
+}
+
+.loa-instructions {
+    background: #fff8e1;
+    border-left: 4px solid #ffc107;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 4px;
+}
+
+.loa-instructions h3 {
+    color: #ff8f00;
+    margin-bottom: 10px;
+}
+
+.loa-details {
+    margin: 20px 0;
+}
+
+.detail-item {
+    padding: 12px;
+    margin: 10px 0;
+    background: #f5f5f5;
+    border-radius: 6px;
+    border-left: 3px solid #667eea;
+}
+
+.button-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
+/* Puzzle Interface */
+.puzzle-container {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    margin-top: 20px;
+}
+
+.puzzle-section {
+    margin-bottom: 30px;
+}
+
+.puzzle-section h2 {
+    color: #667eea;
+    margin-bottom: 15px;
+}
+
+.puzzle-prompt {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+    line-height: 1.8;
+    white-space: pre-line;
+    font-size: 16px;
+}
+
+.timer-display {
+    text-align: right;
+    margin-top: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #667eea;
+}
+
+/* AI Section */
+.ai-section {
+    background: #e3f2fd;
+    border: 2px solid #2196f3;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.ai-section h3 {
+    color: #1976d2;
+    margin-bottom: 15px;
+}
+
+.ai-reasoning {
+    margin-bottom: 20px;
+}
+
+.ai-reasoning h4 {
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.ai-reasoning p {
+    line-height: 1.7;
+    color: #444;
+}
+
+.ai-solution {
+    background: white;
+    padding: 15px;
+    border-radius: 6px;
+    border-left: 4px solid #2196f3;
+}
+
+.ai-solution h4 {
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.ai-answer {
+    font-size: 18px;
+    font-weight: bold;
+    color: #1976d2;
+}
+
+/* Interaction Section */
+.interaction-section {
+    margin-top: 30px;
+}
+
+.interaction-section h3 {
+    color: #667eea;
+    margin-bottom: 15px;
+}
+
+textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 100px;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.current-solution {
+    background: #f5f5f5;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.answer-display {
+    font-size: 18px;
+    font-weight: bold;
+    color: #667eea;
+    margin-top: 10px;
+}
+
+.final-solution-display {
+    background: #e8f5e9;
+    padding: 20px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #2e7d32;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.info-text {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    margin-top: 15px;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 90%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content h2 {
+    color: #667eea;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.question {
+    margin: 25px 0;
+}
+
+.question label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 12px;
+    color: #444;
+}
+
+.likert-scale {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.likert-scale input[type="radio"] {
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+}
+
+.likert-scale span {
+    font-size: 12px;
+    color: #666;
+    white-space: nowrap;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .welcome-card,
+    .loa-intro-card,
+    .puzzle-container {
+        padding: 20px;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+    
+    .likert-scale {
+        flex-wrap: wrap;
+    }
+    
+    .likert-scale span {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background: white;
+    }
+    
+    .btn {
+        display: none;
+    }
+}

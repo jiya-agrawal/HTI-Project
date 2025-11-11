@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTI Experiment - Welcome</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container welcome-container">
+        <div class="welcome-card">
+            <h1>Welcome to the Human-AI Interaction Study</h1>
+            
+            <div class="study-info">
+                <h2>Study Overview</h2>
+                <p>Thank you for participating in this research study on human-AI collaboration. This experiment explores how different levels of AI automation affect trust, awareness, and productivity in decision-making tasks.</p>
+                
+                <h3>What you'll do:</h3>
+                <ul>
+                    <li>Solve 4 logic-based seating arrangement puzzles</li>
+                    <li>Work with an AI assistant at different levels of automation</li>
+                    <li>Complete brief questionnaires after each puzzle</li>
+                    <li>Duration: Approximately 20-30 minutes</li>
+                </ul>
+                
+                <h3>Consent Information:</h3>
+                <div class="consent-box">
+                    <p><strong>Your participation is voluntary and anonymous.</strong></p>
+                    <ul>
+                        <li>All data collected will be used for research purposes only</li>
+                        <li>Your responses will be kept confidential</li>
+                        <li>You may withdraw at any time without penalty</li>
+                        <li>No personally identifiable information will be stored</li>
+                    </ul>
+                    <p>By entering your participant ID and clicking "Start Experiment," you consent to participate in this study.</p>
+                </div>
+            </div>
+            
+            <div class="participant-form">
+                <label for="participant-id">Enter Your Participant ID:</label>
+                <input type="text" id="participant-id" placeholder="e.g., P001" required>
+                <p class="help-text">Your participant ID will be provided by the researcher.</p>
+                
+                <button id="start-btn" class="btn btn-primary">Start Experiment</button>
+                <p id="error-message" class="error-message"></p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('start-btn').addEventListener('click', async () => {
+            const participantId = document.getElementById('participant-id').value.trim();
+            const errorMsg = document.getElementById('error-message');
+            const startBtn = document.getElementById('start-btn');
+            
+            if (!participantId) {
+                errorMsg.textContent = 'Please enter a valid Participant ID';
+                return;
+            }
+            
+            // Disable button to prevent double-click
+            startBtn.disabled = true;
+            startBtn.textContent = 'Initializing...';
+            
+            try {
+                const response = await fetch('/start', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ participant_id: participantId })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    window.location.href = '/loa-intro';
+                } else {
+                    errorMsg.textContent = data.error || 'Failed to start experiment';
+                    startBtn.disabled = false;
+                    startBtn.textContent = 'Start Experiment';
+                }
+            } catch (error) {
+                errorMsg.textContent = 'Connection error. Please try again.';
+                startBtn.disabled = false;
+                startBtn.textContent = 'Start Experiment';
+            }
+        });
+        
+        // Allow Enter key to submit
+        document.getElementById('participant-id').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('start-btn').click();
+            }
+        });
+    </script>
+</body>
+</html>
