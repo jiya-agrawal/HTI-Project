@@ -11,43 +11,121 @@
         <div class="welcome-card">
             <h1>Welcome to the Human-AI Interaction Study</h1>
             
-            <div class="study-info">
-                <h2>Study Overview</h2>
-                <p>Thank you for participating in this research study on human-AI collaboration. This experiment explores how different levels of AI automation affect trust, awareness, and productivity in decision-making tasks.</p>
+            <!-- Privacy Notice Section -->
+            <div id="privacy-section" class="privacy-section">
+                <h2>Privacy Notice</h2>
                 
-                <h3>What you'll do:</h3>
-                <ul>
-                    <li>Solve 4 logic-based seating arrangement puzzles</li>
-                    <li>Work with an AI assistant at different levels of automation</li>
-                    <li>Complete brief questionnaires after each puzzle</li>
-                    <li>Duration: Approximately 20-30 minutes</li>
-                </ul>
-                
-                <h3>Consent Information:</h3>
-                <div class="consent-box">
-                    <p><strong>Your participation is voluntary and anonymous.</strong></p>
+                <div class="privacy-content">
+                    <h3>Purpose</h3>
+                    <p>You are about to begin a series of short tasks that help us study how people interact with AI systems under different conditions. This activity is for academic research purposes only.</p>
+                    
+                    <h3>Data we will collect</h3>
+                    <p>During this activity, we will record:</p>
                     <ul>
-                        <li>All data collected will be used for research purposes only</li>
-                        <li>Your responses will be kept confidential</li>
-                        <li>You may withdraw at any time without penalty</li>
-                        <li>No personally identifiable information will be stored</li>
+                        <li>Your <strong>responses</strong> (typed text, selections, or ratings)</li>
+                        <li><strong>Time taken</strong> to complete each step</li>
+                        <li><strong>Interaction behaviour</strong> relevant to the task (e.g., number of switches, AI outputs shown to you)</li>
                     </ul>
-                    <p>By entering your participant ID and clicking "Start Experiment," you consent to participate in this study.</p>
+                    
+                    <h3>How your data will be used</h3>
+                    <ul>
+                        <li>Your responses will be <strong>combined with those of other participants</strong> for analysis.</li>
+                        <li>The data will be stored <strong>securely</strong> and used only by the research team.</li>
+                        <li>Results may be published in academic reports or presentations, but privacy measures will be taken to anonymise the data and ensure <strong>you will not be identifiable</strong>.</li>
+                    </ul>
+                    
+                    <h3>Voluntary Participation</h3>
+                    <ul>
+                        <li>You can <strong>stop the activity at any time</strong>, for any reason.</li>
+                        <li>There is <strong>no penalty</strong> for choosing not to continue.</li>
+                    </ul>
+                    
+                    <h3>Confidentiality</h3>
+                    <ul>
+                        <li>All data is stored in anonymous form.</li>
+                        <li>No raw data contains your identity.</li>
+                        <li>Only aggregated, anonymized results will be used in research outputs.</li>
+                    </ul>
+                    
+                    <h3>Consent</h3>
+                    <p>By clicking <strong>"I Agree and Continue"</strong>, you confirm that:</p>
+                    <ul>
+                        <li>You have understood how your data will be collected and used</li>
+                        <li>You are at least 18 years old</li>
+                        <li>You voluntarily agree to participate in this activity</li>
+                    </ul>
+                    <p>If you do <strong>not</strong> agree, click <strong>"I Do Not Consent"</strong> and the activity will end.</p>
+                </div>
+                
+                <div class="consent-buttons">
+                    <button id="agree-btn" class="btn btn-primary">I Agree and Continue</button>
+                    <button id="disagree-btn" class="btn btn-danger">I Do Not Consent</button>
                 </div>
             </div>
             
-            <div class="participant-form">
-                <label for="participant-id">Enter Your Participant ID:</label>
-                <input type="text" id="participant-id" placeholder="e.g., P001" required>
-                <p class="help-text">Your participant ID will be provided by the researcher.</p>
+            <!-- Study Info Section (Hidden until consent given) -->
+            <div id="study-section" class="study-section" style="display: none;">
+                <div class="study-info">
+                    <h2>Study Overview</h2>
+                    <p>Thank you for participating in this research study on human-AI collaboration. This experiment explores how different levels of AI automation affect trust, awareness, and productivity in decision-making tasks.</p>
+                    
+                    <h3>What you'll do:</h3>
+                    <ul>
+                        <li>Solve 4 logic-based seating arrangement puzzles</li>
+                        <li>Work with an AI assistant at different levels of automation</li>
+                        <li>Complete brief questionnaires after each puzzle</li>
+                        <li>Duration: Approximately 20-30 minutes</li>
+                    </ul>
+                    
+                    <h3>Consent Information:</h3>
+                    <div class="consent-box">
+                        <p><strong>Your participation is voluntary and anonymous.</strong></p>
+                        <ul>
+                            <li>All data collected will be used for research purposes only</li>
+                            <li>Your responses will be kept confidential</li>
+                            <li>You may withdraw at any time without penalty</li>
+                            <li>No personally identifiable information will be stored</li>
+                        </ul>
+                        <p>By entering your participant ID and clicking "Start Experiment," you consent to participate in this study.</p>
+                    </div>
+                </div>
                 
-                <button id="start-btn" class="btn btn-primary">Start Experiment</button>
-                <p id="error-message" class="error-message"></p>
+                <div class="participant-form">
+                    <label for="participant-id">Enter Your Participant ID:</label>
+                    <input type="text" id="participant-id" placeholder="e.g., P001" required>
+                    <p class="help-text">Your participant ID will be provided by the researcher.</p>
+                    
+                    <button id="start-btn" class="btn btn-primary">Start Experiment</button>
+                    <p id="error-message" class="error-message"></p>
+                </div>
             </div>
         </div>
     </div>
     
     <script>
+        // Handle consent buttons
+        document.getElementById('agree-btn').addEventListener('click', () => {
+            // Hide privacy section and show study section
+            document.getElementById('privacy-section').style.display = 'none';
+            document.getElementById('study-section').style.display = 'block';
+        });
+        
+        document.getElementById('disagree-btn').addEventListener('click', () => {
+            // Show thank you message and end the activity
+            const welcomeCard = document.querySelector('.welcome-card');
+            welcomeCard.innerHTML = `
+                <h1>Thank You</h1>
+                <div class="consent-box" style="text-align: center; padding: 40px;">
+                    <p style="font-size: 18px; margin-bottom: 20px;">
+                        <strong>We respect your decision.</strong>
+                    </p>
+                    <p>Thank you for considering participation in this research study.</p>
+                    <p>You may now close this window.</p>
+                </div>
+            `;
+        });
+        
+        // Handle start experiment button
         document.getElementById('start-btn').addEventListener('click', async () => {
             const participantId = document.getElementById('participant-id').value.trim();
             const errorMsg = document.getElementById('error-message');
@@ -87,7 +165,7 @@
             }
         });
         
-        // Allow Enter key to submit
+        // Allow Enter key to submit (only when study section is visible)
         document.getElementById('participant-id').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 document.getElementById('start-btn').click();
