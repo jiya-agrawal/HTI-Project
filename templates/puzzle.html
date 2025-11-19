@@ -29,8 +29,8 @@
                 </div>
             </div>
             
-            <!-- AI Assistant Section (Only for LOA 3 and 4) -->
-            {% if loa == 3 or loa == 4 %}
+            <!-- AI Assistant Section (Only for LOA 3) -->
+            {% if loa == 3 %}
             <div class="ai-section">
                 <h3>🤖 AI Assistant</h3>
                 
@@ -42,6 +42,22 @@
                 <div class="ai-solution">
                     <h4>AI Solution:</h4>
                     <p class="ai-answer">{{ ai_solution }}</p>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- AI Solution for LOA 4 (Reasoning hidden initially) -->
+            {% if loa == 4 %}
+            <div class="ai-section">
+                <h3>🤖 AI Solution</h3>
+                
+                <div class="ai-solution">
+                    <p class="ai-answer">{{ ai_solution }}</p>
+                </div>
+                
+                <div id="ai-reasoning-loa4" class="ai-reasoning" style="display: none;">
+                    <h4>AI Reasoning:</h4>
+                    <p>{{ ai_reasoning }}</p>
                 </div>
             </div>
             {% endif %}
@@ -91,13 +107,21 @@
                 </div>
                 
                 {% elif loa == 4 %}
-                <!-- LOA 4: Observe Only -->
+                <!-- LOA 4: Review AI Solution -->
                 <div class="loa4-controls">
-                    <h3>Final Solution (AI Automated):</h3>
-                    <div class="final-solution-display">
-                        {{ ai_solution }}
+                    <h3>Review AI Solution:</h3>
+                    <p class="info-text">The AI has completed the puzzle automatically. Please review the solution above.</p>
+                    
+                    <div class="button-group">
+                        <button id="accept-loa4-btn" class="btn btn-success">✓ Accept</button>
+                        <button id="view-reasoning-btn" class="btn btn-primary">👁 View AI Reasoning</button>
+                        <button id="reject-loa4-btn" class="btn btn-danger">✗ Reject</button>
                     </div>
-                    <p class="info-text">The AI has completed the puzzle automatically. Please observe the solution above.</p>
+                    
+                    <div id="reject-loa4-area" style="display: none; margin-top: 20px;">
+                        <h4>Provide Your Own Solution:</h4>
+                        <textarea id="rejected-loa4-solution" rows="4" placeholder="Enter your corrected solution...">{{ ai_solution }}</textarea>
+                    </div>
                 </div>
                 {% endif %}
                 
@@ -299,14 +323,50 @@
             });
         }
         
-        // LOA 4: Full Automation
+        // LOA 4: Review and Accept/Reject
         if (LOA === 4) {
-            finalAnswer = '{{ ai_solution }}';
-            acceptedAdvice = true;
-            // Auto-show submit button after a brief delay
-            setTimeout(() => {
+            decisionStartTime = Date.now();
+            let reasoningViewed = false;
+            
+            document.getElementById('accept-loa4-btn').addEventListener('click', () => {
+                logInteraction('accept_ai_solution', { reasoning_viewed: reasoningViewed });
+                finalAnswer = '{{ ai_solution }}';
+                acceptedAdvice = true;
                 showSubmitButton();
-            }, 2000);
+                document.querySelectorAll('.loa4-controls button').forEach(btn => btn.disabled = true);
+            });
+            
+            document.getElementById('view-reasoning-btn').addEventListener('click', () => {
+                const reasoningDiv = document.getElementById('ai-reasoning-loa4');
+                if (reasoningDiv.style.display === 'none') {
+                    reasoningDiv.style.display = 'block';
+                    reasoningViewed = true;
+                    logInteraction('view_ai_reasoning');
+                    document.getElementById('view-reasoning-btn').textContent = '👁 Hide AI Reasoning';
+                } else {
+                    reasoningDiv.style.display = 'none';
+                    document.getElementById('view-reasoning-btn').textContent = '👁 View AI Reasoning';
+                }
+            });
+            
+            document.getElementById('reject-loa4-btn').addEventListener('click', () => {
+                logInteraction('reject_ai_solution', { reasoning_viewed: reasoningViewed });
+                document.getElementById('reject-loa4-area').style.display = 'block';
+                acceptedAdvice = false;
+                overridden = true;
+                
+                const textarea = document.getElementById('rejected-loa4-solution');
+                textarea.addEventListener('change', () => {
+                    finalAnswer = textarea.value;
+                    if (finalAnswer.trim().length > 0) {
+                        showSubmitButton();
+                    }
+                });
+                
+                // Disable action buttons after rejection
+                document.getElementById('accept-loa4-btn').disabled = true;
+                document.getElementById('reject-loa4-btn').disabled = true;
+            });
         }
         
         // Submit button handler
