@@ -1839,5 +1839,664 @@
     "details": {
       "reasoning_viewed": true
     }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 2,
+    "interaction_type": "view_ai_reasoning",
+    "timestamp": "2025-11-19T20:06:23.300541",
+    "details": {}
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 2,
+    "interaction_type": "reject_ai_solution",
+    "timestamp": "2025-11-19T20:06:27.594888",
+    "details": {
+      "reasoning_viewed": true
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 2,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:06:32.594082",
+    "details": {
+      "element": "Kelly"
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 2,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:06:33.822213",
+    "details": {
+      "element": "Kelly",
+      "position": 5
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 2,
+    "interaction_type": "accept_ai_solution",
+    "timestamp": "2025-11-19T20:06:41.643552",
+    "details": {
+      "reasoning_viewed": false
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 3,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:06:53.535881",
+    "details": {
+      "element": "Yellow"
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 3,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:06:54.411741",
+    "details": {
+      "element": "Yellow",
+      "position": 1
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 3,
+    "interaction_type": "clear_solution",
+    "timestamp": "2025-11-19T20:06:56.173980",
+    "details": {}
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 3,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:06:57.720720",
+    "details": {
+      "element": "Red"
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 3,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:06:57.987311",
+    "details": {
+      "element": "Red",
+      "position": 1
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 3,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:06:58.728105",
+    "details": {
+      "element": "Green"
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 3,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:06:59.310232",
+    "details": {
+      "element": "Green",
+      "position": 2
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 3,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:06:59.948594",
+    "details": {
+      "element": "Blue"
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 3,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:07:00.538376",
+    "details": {
+      "element": "Blue",
+      "position": 3
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 3,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:07:01.139817",
+    "details": {
+      "element": "Yellow"
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 3,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:07:01.771447",
+    "details": {
+      "element": "Yellow",
+      "position": 4
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 3,
+    "interaction_type": "clear_solution",
+    "timestamp": "2025-11-19T20:07:02.539839",
+    "details": {}
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 3,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:07:03.778411",
+    "details": {
+      "element": "Red"
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 3,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:07:04.044691",
+    "details": {
+      "element": "Red",
+      "position": 1
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 3,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:07:04.818402",
+    "details": {
+      "element": "Blue"
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 3,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:07:05.381213",
+    "details": {
+      "element": "Blue",
+      "position": 2
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 3,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:07:05.935600",
+    "details": {
+      "element": "Green"
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 3,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:07:06.537523",
+    "details": {
+      "element": "Green",
+      "position": 3
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 3,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:07:07.445394",
+    "details": {
+      "element": "Yellow"
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 3,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:07:07.696444",
+    "details": {
+      "element": "Yellow",
+      "position": 4
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 1,
+    "interaction_type": "request_hint",
+    "timestamp": "2025-11-19T20:07:31.229616",
+    "details": {
+      "hint_number": 1,
+      "hint_text": "Start by placing Alice first, then consider who must sit next to her."
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 1,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:07:32.750863",
+    "details": {
+      "element": "Alice"
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 1,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:07:33.448608",
+    "details": {
+      "element": "Alice",
+      "position": 1
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 1,
+    "interaction_type": "request_hint",
+    "timestamp": "2025-11-19T20:07:35.988441",
+    "details": {
+      "hint_number": 2,
+      "hint_text": "Emma must be next to Alice. Since it's a circular table, think about who can be opposite to whom."
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 1,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:07:38.584273",
+    "details": {
+      "element": "Emma"
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 1,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:07:39.344948",
+    "details": {
+      "element": "Emma",
+      "position": 2
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 1,
+    "interaction_type": "clear_solution",
+    "timestamp": "2025-11-19T20:07:44.286324",
+    "details": {}
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 1,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:07:44.997881",
+    "details": {
+      "element": "Charlie"
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 1,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:07:45.535568",
+    "details": {
+      "element": "Charlie",
+      "position": 1
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 1,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:07:47.082128",
+    "details": {
+      "element": "Emma"
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 1,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:07:48.027151",
+    "details": {
+      "element": "Emma",
+      "position": 2
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 1,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:07:48.626206",
+    "details": {
+      "element": "Bob"
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 1,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:07:49.338402",
+    "details": {
+      "element": "Bob",
+      "position": 3
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 1,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:07:49.892178",
+    "details": {
+      "element": "Alice"
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 1,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:07:50.507665",
+    "details": {
+      "element": "Alice",
+      "position": 4
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 1,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:07:51.077555",
+    "details": {
+      "element": "Diana"
+    }
+  },
+  {
+    "participant_id": "P0012",
+    "puzzle_id": 1,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:07:51.791005",
+    "details": {
+      "element": "Diana",
+      "position": 5
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 1,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:11:23.003720",
+    "details": {
+      "element": "Alice"
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 1,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:11:23.256910",
+    "details": {
+      "element": "Alice",
+      "position": 1
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 1,
+    "interaction_type": "clear_solution",
+    "timestamp": "2025-11-19T20:11:24.929058",
+    "details": {}
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 1,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:11:27.687851",
+    "details": {
+      "element": "Charlie"
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 1,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:11:27.943252",
+    "details": {
+      "element": "Charlie",
+      "position": 1
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 1,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:11:28.820478",
+    "details": {
+      "element": "Bob"
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 1,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:11:29.389841",
+    "details": {
+      "element": "Bob",
+      "position": 2
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 1,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:11:38.669479",
+    "details": {
+      "element": "Diana"
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 1,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:11:38.919052",
+    "details": {
+      "element": "Diana",
+      "position": 3
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 1,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:11:39.523745",
+    "details": {
+      "element": "Alice"
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 1,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:11:40.106249",
+    "details": {
+      "element": "Alice",
+      "position": 4
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 1,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:11:40.993697",
+    "details": {
+      "element": "Emma"
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 1,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:11:41.522659",
+    "details": {
+      "element": "Emma",
+      "position": 5
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 2,
+    "interaction_type": "request_hint",
+    "timestamp": "2025-11-19T20:11:54.044762",
+    "details": {
+      "hint_number": 1,
+      "hint_text": "Frank must be at one end. Start by placing Frank at the left end."
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 2,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:11:58.127396",
+    "details": {
+      "element": "Frank"
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 2,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:11:58.295300",
+    "details": {
+      "element": "Frank",
+      "position": 1
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 2,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:11:58.942066",
+    "details": {
+      "element": "Henry"
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 2,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:11:59.460648",
+    "details": {
+      "element": "Henry",
+      "position": 2
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 2,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:12:00.085611",
+    "details": {
+      "element": "Jack"
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 2,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:12:00.616443",
+    "details": {
+      "element": "Jack",
+      "position": 3
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 2,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:12:01.350250",
+    "details": {
+      "element": "Iris"
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 2,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:12:01.998056",
+    "details": {
+      "element": "Iris",
+      "position": 4
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 2,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:12:02.680232",
+    "details": {
+      "element": "Grace"
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 2,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:12:03.197767",
+    "details": {
+      "element": "Grace",
+      "position": 5
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 2,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-11-19T20:12:04.797137",
+    "details": {
+      "element": "Kelly"
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 2,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-11-19T20:12:05.436271",
+    "details": {
+      "element": "Kelly",
+      "position": 6
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 4,
+    "interaction_type": "view_ai_reasoning",
+    "timestamp": "2025-11-19T20:13:45.161655",
+    "details": {}
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 4,
+    "interaction_type": "reject_ai_solution",
+    "timestamp": "2025-11-19T20:13:48.837793",
+    "details": {
+      "reasoning_viewed": true
+    }
+  },
+  {
+    "participant_id": "P045",
+    "puzzle_id": 4,
+    "interaction_type": "accept_ai_solution",
+    "timestamp": "2025-11-19T20:13:53.360954",
+    "details": {
+      "reasoning_viewed": false
+    }
   }
 ]

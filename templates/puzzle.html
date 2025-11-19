@@ -62,65 +62,57 @@
             </div>
             {% endif %}
             
-            <!-- Interaction Area (varies by LOA) -->
+            <!-- Drag and Drop Solution Builder (All LOAs) -->
             <div class="interaction-section">
-                {% if loa == 1 %}
-                <!-- LOA 1: Manual Input -->
-                <div class="loa1-controls">
-                    <h3>Your Solution:</h3>
-                    <textarea id="user-solution" rows="4" placeholder="Enter your complete solution here..."></textarea>
-                </div>
+                <h3>🎯 Build Your Solution:</h3>
+                <p class="instruction-text">Drag and drop the items below to create the correct sequence</p>
                 
-                {% elif loa == 2 %}
-                <!-- LOA 2: Hint-Based System -->
-                <div class="loa2-controls">
-                    <h3>Your Solution:</h3>
-                    <textarea id="user-solution" rows="4" placeholder="Enter your solution here... Click 'Get Hint' if you need help."></textarea>
-                    
-                    <div class="hint-section">
-                        <button id="hint-btn" class="btn btn-primary">💡 Get Hint (<span id="hints-remaining">{{ puzzle.hints|length }}</span> remaining)</button>
-                        
-                        <div id="hints-container" style="margin-top: 15px;">
-                            <!-- Hints will appear here dynamically -->
+                <!-- Available Items Pool -->
+                <div class="items-pool">
+                    <h4>Available Items:</h4>
+                    <div id="source-items" class="drag-container">
+                        {% for element in puzzle.elements %}
+                        <div class="drag-item" draggable="true" data-element="{{ element }}">
+                            {{ element }}
                         </div>
+                        {% endfor %}
                     </div>
                 </div>
                 
+                <!-- Solution Drop Zone -->
+                <div class="solution-area">
+                    <h4>Your Solution Sequence:</h4>
+                    <div id="solution-zone" class="drop-zone">
+                        <div class="empty-state">Drag items here to build your solution</div>
+                    </div>
+                    <button id="clear-solution-btn" class="btn btn-secondary" style="display: none;">🔄 Clear Solution</button>
+                </div>
+                
+                <!-- LOA-Specific Controls -->
+                {% if loa == 2 %}
+                <!-- LOA 2: Hint System -->
+                <div class="hint-section">
+                    <button id="hint-btn" class="btn btn-primary">💡 Get Hint (<span id="hints-remaining">{{ puzzle.hints|length }}</span> remaining)</button>
+                    
+                    <div id="hints-container" style="margin-top: 15px;">
+                        <!-- Hints will appear here dynamically -->
+                    </div>
+                </div>
                 {% elif loa == 3 %}
-                <!-- LOA 3: Review/Approve/Intervene -->
-                <div class="loa3-controls">
-                    <h3>Review AI Solution:</h3>
-                    <div class="current-solution">
-                        <strong>Current Solution:</strong>
-                        <div id="current-answer" class="answer-display">{{ ai_solution }}</div>
-                    </div>
-                    
+                <!-- LOA 3: Approve/Intervene Controls -->
+                <div class="loa3-controls" style="margin-top: 20px;">
                     <div class="button-group">
-                        <button id="approve-btn" class="btn btn-success">✓ Approve</button>
-                        <button id="intervene-btn" class="btn btn-warning">⚠ Intervene</button>
-                    </div>
-                    
-                    <div id="intervention-area" style="display: none;">
-                        <h4>Provide Corrected Solution:</h4>
-                        <textarea id="intervention-solution" rows="4">{{ ai_solution }}</textarea>
+                        <button id="approve-btn" class="btn btn-success">✓ Approve AI Solution</button>
+                        <button id="intervene-btn" class="btn btn-warning">⚠ Intervene & Modify</button>
                     </div>
                 </div>
-                
                 {% elif loa == 4 %}
-                <!-- LOA 4: Review AI Solution -->
-                <div class="loa4-controls">
-                    <h3>Review AI Solution:</h3>
-                    <p class="info-text">The AI has completed the puzzle automatically. Please review the solution above.</p>
-                    
+                <!-- LOA 4: Accept/View/Reject Controls -->
+                <div class="loa4-controls" style="margin-top: 20px;">
                     <div class="button-group">
                         <button id="accept-loa4-btn" class="btn btn-success">✓ Accept</button>
                         <button id="view-reasoning-btn" class="btn btn-primary">👁 View AI Reasoning</button>
-                        <button id="reject-loa4-btn" class="btn btn-danger">✗ Reject</button>
-                    </div>
-                    
-                    <div id="reject-loa4-area" style="display: none; margin-top: 20px;">
-                        <h4>Provide Your Own Solution:</h4>
-                        <textarea id="rejected-loa4-solution" rows="4" placeholder="Enter your corrected solution...">{{ ai_solution }}</textarea>
+                        <button id="reject-loa4-btn" class="btn btn-danger">✗ Reject & Modify</button>
                     </div>
                 </div>
                 {% endif %}
@@ -231,48 +223,150 @@
             document.getElementById('submit-container').style.display = 'block';
         }
         
-        // LOA 1: Manual Control
-        if (LOA === 1) {
-            decisionStartTime = Date.now();
-            const textarea = document.getElementById('user-solution');
-            
-            textarea.addEventListener('input', () => {
-                logInteraction('text_input', { length: textarea.value.length });
-            });
-            
-            textarea.addEventListener('change', () => {
-                finalAnswer = textarea.value;
-                if (finalAnswer.trim().length > 0) {
-                    showSubmitButton();
-                }
-            });
+        // ============== DRAG AND DROP FUNCTIONALITY ==============
+        const solutionZone = document.getElementById('solution-zone');
+        const sourceItems = document.getElementById('source-items');
+        const clearBtn = document.getElementById('clear-solution-btn');
+        let solutionSequence = [];
+        let draggedElement = null;
+        let isModifyingAllowed = true; // For LOA 3 and 4 initial lock
+        
+        // Get current solution as array
+        function getCurrentSolution() {
+            const items = solutionZone.querySelectorAll('.drag-item');
+            return Array.from(items).map(item => item.dataset.element);
         }
         
-        // LOA 2: Hint-Based System
+        // Update final answer when solution changes
+        function updateFinalAnswer() {
+            solutionSequence = getCurrentSolution();
+            finalAnswer = solutionSequence.join(', ');
+            
+            if (solutionSequence.length > 0) {
+                clearBtn.style.display = 'inline-block';
+                // Hide empty state
+                const emptyState = solutionZone.querySelector('.empty-state');
+                if (emptyState) emptyState.style.display = 'none';
+                
+                // Show submit button if solution is complete
+                const totalElements = {{ puzzle.elements|length }};
+                if (solutionSequence.length === totalElements) {
+                    showSubmitButton();
+                }
+            } else {
+                clearBtn.style.display = 'none';
+                const emptyState = solutionZone.querySelector('.empty-state');
+                if (emptyState) emptyState.style.display = 'block';
+            }
+        }
+        
+        // Drag start handler
+        function handleDragStart(e) {
+            if (!isModifyingAllowed) return;
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+            logInteraction('drag_start', { element: this.dataset.element });
+        }
+        
+        // Drag end handler
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            draggedElement = null;
+        }
+        
+        // Drag over handler
+        function handleDragOver(e) {
+            if (e.preventDefault) e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+        
+        // Drop handler for solution zone
+        function handleDropInSolution(e) {
+            if (e.stopPropagation) e.stopPropagation();
+            if (!draggedElement || !isModifyingAllowed) return false;
+            
+            e.preventDefault();
+            
+            const dropTarget = e.target;
+            
+            // If dropping on another item, insert before it
+            if (dropTarget.classList.contains('drag-item') && dropTarget !== draggedElement) {
+                solutionZone.insertBefore(draggedElement, dropTarget);
+            } else if (dropTarget === solutionZone || dropTarget.classList.contains('empty-state')) {
+                // Dropping in empty zone or on empty state
+                solutionZone.appendChild(draggedElement);
+            }
+            
+            logInteraction('drop_in_solution', { 
+                element: draggedElement.dataset.element,
+                position: Array.from(solutionZone.children).indexOf(draggedElement)
+            });
+            
+            updateFinalAnswer();
+            return false;
+        }
+        
+        // Drop handler for source (return to pool)
+        function handleDropInSource(e) {
+            if (e.stopPropagation) e.stopPropagation();
+            if (!draggedElement || !isModifyingAllowed) return false;
+            
+            e.preventDefault();
+            sourceItems.appendChild(draggedElement);
+            
+            logInteraction('return_to_pool', { element: draggedElement.dataset.element });
+            updateFinalAnswer();
+            return false;
+        }
+        
+        // Initialize drag and drop for all items
+        function initializeDragAndDrop() {
+            const allItems = document.querySelectorAll('.drag-item');
+            allItems.forEach(item => {
+                item.addEventListener('dragstart', handleDragStart);
+                item.addEventListener('dragend', handleDragEnd);
+            });
+            
+            solutionZone.addEventListener('dragover', handleDragOver);
+            solutionZone.addEventListener('drop', handleDropInSolution);
+            
+            sourceItems.addEventListener('dragover', handleDragOver);
+            sourceItems.addEventListener('drop', handleDropInSource);
+        }
+        
+        // Clear solution button
+        clearBtn.addEventListener('click', () => {
+            const itemsInSolution = solutionZone.querySelectorAll('.drag-item');
+            itemsInSolution.forEach(item => {
+                sourceItems.appendChild(item);
+            });
+            logInteraction('clear_solution');
+            updateFinalAnswer();
+        });
+        
+        // ============== LOA-SPECIFIC LOGIC ==============
+        
+        // LOA 1: Manual drag and drop
+        if (LOA === 1) {
+            decisionStartTime = Date.now();
+            initializeDragAndDrop();
+        }
+        
+        // LOA 2: Drag and drop with hints
         if (LOA === 2) {
             decisionStartTime = Date.now();
+            initializeDragAndDrop();
             
             const hints = {{ puzzle.hints | tojson }};
             let currentHintIndex = 0;
             
-            const textarea = document.getElementById('user-solution');
             const hintBtn = document.getElementById('hint-btn');
             const hintsContainer = document.getElementById('hints-container');
             const hintsRemaining = document.getElementById('hints-remaining');
             
-            // Track text input
-            textarea.addEventListener('input', () => {
-                logInteraction('text_input', { length: textarea.value.length });
-            });
-            
-            textarea.addEventListener('change', () => {
-                finalAnswer = textarea.value;
-                if (finalAnswer.trim().length > 0) {
-                    showSubmitButton();
-                }
-            });
-            
-            // Hint button logic
             hintBtn.addEventListener('click', () => {
                 if (currentHintIndex < hints.length) {
                     const hintDiv = document.createElement('div');
@@ -296,13 +390,29 @@
             });
         }
         
-        // LOA 3: Management by Exception
+        // LOA 3: Pre-fill AI solution, allow approve or intervene
         if (LOA === 3) {
             decisionStartTime = Date.now();
             
+            // Pre-populate solution zone with AI solution
+            const aiSolution = '{{ ai_solution }}'.split(', ');
+            aiSolution.forEach(element => {
+                const item = sourceItems.querySelector(`[data-element="${element}"]`);
+                if (item) {
+                    solutionZone.appendChild(item);
+                }
+            });
+            updateFinalAnswer();
+            
+            // Initially lock modifications
+            isModifyingAllowed = false;
+            document.querySelectorAll('.drag-item').forEach(item => {
+                item.style.opacity = '0.7';
+                item.style.cursor = 'not-allowed';
+            });
+            
             document.getElementById('approve-btn').addEventListener('click', () => {
                 logInteraction('approve_ai_solution');
-                finalAnswer = '{{ ai_solution }}';
                 acceptedAdvice = true;
                 showSubmitButton();
                 document.querySelectorAll('.loa3-controls button').forEach(btn => btn.disabled = true);
@@ -310,27 +420,52 @@
             
             document.getElementById('intervene-btn').addEventListener('click', () => {
                 logInteraction('intervene');
-                document.getElementById('intervention-area').style.display = 'block';
                 overridden = true;
+                isModifyingAllowed = true;
                 
-                const textarea = document.getElementById('intervention-solution');
-                textarea.addEventListener('change', () => {
-                    finalAnswer = textarea.value;
-                    if (finalAnswer.trim().length > 0) {
+                // Enable drag and drop
+                initializeDragAndDrop();
+                document.querySelectorAll('.drag-item').forEach(item => {
+                    item.style.opacity = '1';
+                    item.style.cursor = 'grab';
+                });
+                
+                document.querySelectorAll('.loa3-controls button').forEach(btn => btn.disabled = true);
+                
+                // Monitor changes to solution
+                const observer = new MutationObserver(() => {
+                    if (getCurrentSolution().length > 0) {
                         showSubmitButton();
                     }
                 });
+                observer.observe(solutionZone, { childList: true });
             });
         }
         
-        // LOA 4: Review and Accept/Reject
+        // LOA 4: Pre-fill AI solution, allow accept/view/reject
         if (LOA === 4) {
             decisionStartTime = Date.now();
             let reasoningViewed = false;
             
+            // Pre-populate solution zone with AI solution
+            const aiSolution = '{{ ai_solution }}'.split(', ');
+            aiSolution.forEach(element => {
+                const item = sourceItems.querySelector(`[data-element="${element}"]`);
+                if (item) {
+                    solutionZone.appendChild(item);
+                }
+            });
+            updateFinalAnswer();
+            
+            // Initially lock modifications
+            isModifyingAllowed = false;
+            document.querySelectorAll('.drag-item').forEach(item => {
+                item.style.opacity = '0.7';
+                item.style.cursor = 'not-allowed';
+            });
+            
             document.getElementById('accept-loa4-btn').addEventListener('click', () => {
                 logInteraction('accept_ai_solution', { reasoning_viewed: reasoningViewed });
-                finalAnswer = '{{ ai_solution }}';
                 acceptedAdvice = true;
                 showSubmitButton();
                 document.querySelectorAll('.loa4-controls button').forEach(btn => btn.disabled = true);
@@ -351,21 +486,26 @@
             
             document.getElementById('reject-loa4-btn').addEventListener('click', () => {
                 logInteraction('reject_ai_solution', { reasoning_viewed: reasoningViewed });
-                document.getElementById('reject-loa4-area').style.display = 'block';
-                acceptedAdvice = false;
                 overridden = true;
+                isModifyingAllowed = true;
                 
-                const textarea = document.getElementById('rejected-loa4-solution');
-                textarea.addEventListener('change', () => {
-                    finalAnswer = textarea.value;
-                    if (finalAnswer.trim().length > 0) {
+                // Enable drag and drop
+                initializeDragAndDrop();
+                document.querySelectorAll('.drag-item').forEach(item => {
+                    item.style.opacity = '1';
+                    item.style.cursor = 'grab';
+                });
+                
+                document.getElementById('accept-loa4-btn').disabled = true;
+                document.getElementById('reject-loa4-btn').disabled = true;
+                
+                // Monitor changes to solution
+                const observer = new MutationObserver(() => {
+                    if (getCurrentSolution().length > 0) {
                         showSubmitButton();
                     }
                 });
-                
-                // Disable action buttons after rejection
-                document.getElementById('accept-loa4-btn').disabled = true;
-                document.getElementById('reject-loa4-btn').disabled = true;
+                observer.observe(solutionZone, { childList: true });
             });
         }
         
