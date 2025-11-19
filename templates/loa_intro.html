@@ -28,41 +28,74 @@
                 <p>{{ loa_info.instructions }}</p>
             </div>
             
+            <!-- {% if loa_info.disclaimer %}
+            <div class="ai-disclaimer">
+                {{ loa_info.disclaimer }}
+            </div>
+            {% endif %} -->
+            
             <div class="loa-details">
-                {% if loa == 1 %}
-                <div class="detail-item">
-                    <strong>Your Role:</strong> Full control - solve the puzzle independently
+                <div class="detail-section">
+                    <h3>👤 Your Role:</h3>
+                    {% if loa_info.your_role %}
+                    <ul class="role-list">
+                        {% for item in loa_info.your_role %}
+                            {% if item is mapping %}
+                                <li>{{ item.text | safe }}
+                                    {% if item.sub_items %}
+                                    <ul class="sub-role-list">
+                                        {% for sub_item in item.sub_items %}
+                                        <li>{{ sub_item | safe }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endif %}
+                                </li>
+                            {% else %}
+                                <li>{{ item | safe }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p><em>You will solve this puzzle entirely on your own with no AI involvement.</em></p>
+                    {% endif %}
                 </div>
-                <div class="detail-item">
-                    <strong>AI Role:</strong> No assistance provided
+                
+                <div class="detail-section">
+                    <h3>🤖 AI Role:</h3>
+                    {% if loa_info.ai_role %}
+                    <ul class="role-list">
+                        {% for item in loa_info.ai_role %}
+                            {% if item is mapping %}
+                                <li>{{ item.text | safe }}
+                                    {% if item.sub_items %}
+                                    <ul class="sub-role-list">
+                                        {% for sub_item in item.sub_items %}
+                                        <li>{{ sub_item | safe }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endif %}
+                                </li>
+                            {% else %}
+                                <li>{{ item | safe }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p><em>No AI assistance in this level.</em></p>
+                    {% endif %}
                 </div>
-                {% elif loa == 2 %}
-                <div class="detail-item">
-                    <strong>Your Role:</strong> Decision maker - accept, reject, or modify AI suggestions
-                </div>
-                <div class="detail-item">
-                    <strong>AI Role:</strong> Advisor - provides suggestions for your review
-                </div>
-                {% elif loa == 3 %}
-                <div class="detail-item">
-                    <strong>Your Role:</strong> Supervisor - review and intervene if needed
-                </div>
-                <div class="detail-item">
-                    <strong>AI Role:</strong> Executor - automatically solves but you can override
-                </div>
-                {% elif loa == 4 %}
-                <div class="detail-item">
-                    <strong>Your Role:</strong> Observer - view the AI's solution process
-                </div>
-                <div class="detail-item">
-                    <strong>AI Role:</strong> Autonomous - handles everything automatically
-                </div>
-                {% endif %}
             </div>
             
             <div class="button-container">
                 <button id="begin-puzzle-btn" class="btn btn-primary">Begin Puzzle</button>
             </div>
+
+            {% if loa_info.disclaimer %}
+            <div class="ai-disclaimer">
+                {{ loa_info.disclaimer }}
+            </div>
+            {% endif %}
+
         </div>
     </div>
     

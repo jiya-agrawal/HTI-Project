@@ -20,24 +20,85 @@ with open('logic_puzzles.json', 'r', encoding='utf-8') as f:
 # LOA Descriptions
 LOA_DESCRIPTIONS = {
     1: {
-        "title": "LOA 1 – Manual Control",
+        "title": "No AI Assistance",
         "description": "You will solve this puzzle entirely on your own. The AI will not provide any assistance. Read the puzzle carefully and enter your complete solution in the text field provided.",
-        "instructions": "Think through the constraints step by step and enter your final answer when ready."
+        "instructions": "Think through the constraints step by step and enter your final answer when ready.",
+        "your_role": [
+            "You will need to solve the puzzle entirely on your own",
+            "Use your own reasoning and judgment to arrive at the answer",
+            "There is no AI involvement in this section"
+        ],
+        "ai_role": []
     },
     2: {
-        "title": "LOA 2 – Management by Consent",
-        "description": "The AI will suggest a solution to the puzzle. You must review the AI's suggestion and decide whether to Accept it, Reject it, or Edit it before submitting.",
-        "instructions": "Carefully evaluate the AI's reasoning and solution. You have full control over the final decision."
+        "title": "AI available on request",
+        "description": "You may use AI hints to solve the puzzle. If at any point you want help, you may request assistance from the AI using the 'Ask AI' option.",
+        "instructions": "You can choose to accept or reject the hint. Use AI only if you choose to, you remain the primary decision-maker.",
+        "disclaimer": "⚠️ Important: AI can make mistakes. Always verify the AI's suggestions before accepting them.",
+        "your_role": [
+            "You may use AI hints to solve the puzzle",
+            "If at any point you want help, you may request assistance from the AI using the 'Ask AI' option",
+            "You can choose to accept or reject the hint",
+            "Use AI only if you choose to, you remain the primary decision-maker"
+        ],
+        "ai_role": [
+            "The AI will respond only when asked",
+            "The AI will not provide you with the full answer - only hints to solve the puzzle"
+        ]
     },
     3: {
-        "title": "LOA 3 – Management by Exception",
-        "description": "The AI will automatically solve the puzzle and present its solution. Your role is to review the solution and either Approve it, or Intervene to make corrections if you spot any errors.",
-        "instructions": "The AI's solution is already applied. Review it carefully and intervene only if necessary."
+        "title": "AI actively seeks confirmation",
+        "description": "In this section, your main job is to oversee and validate the AI's work. The AI will take the lead in solving the puzzle, but it will pause at key points to ask for your confirmation.",
+        "instructions": "You can step in at any point to correct the AI, redirect it, or ask it to rethink.",
+        "disclaimer": "⚠️ Important: AI can make mistakes. Carefully review each step before confirming.",
+        "your_role": [
+            "In this section, your main job is to <strong>oversee and validate</strong> the AI's work.",
+            {
+                "text": "The AI will take the lead in solving the puzzle, but it will <strong>pause at key points</strong> and ask you whether:",
+                "sub_items": [
+                    "its current reasoning is correct,",
+                    "its intermediate step is appropriate, or",
+                    "it should revise its approach."
+                ]
+            },
+            "You can step in <strong>at any point</strong> to correct the AI, redirect it, or ask it to rethink."
+        ],
+        "ai_role": [
+            {
+                "text": "The AI will:",
+                "sub_items": [
+                    "Work <strong>autonomously</strong>, progressing through the problem without being prompted.",
+                    "Generate intermediate steps and partial solutions on its own.",
+                    "<strong>Periodically ask for your confirmation</strong> before continuing."
+                ]
+            },
+            "The AI relies on your feedback to stay on track.",
+            "If you indicate something is incorrect, the AI will <strong>revise</strong> and continue based on your input."
+        ]
     },
     4: {
-        "title": "LOA 4 – Full Automation",
-        "description": "The AI will solve the puzzle completely and automatically. You will observe the AI's solution but cannot make any changes. Your task is simply to review the final answer.",
-        "instructions": "Observe the AI's reasoning and solution. No action is required from you."
+        "title": "AI solves completely, you review at the end",
+        "description": "In this section, your responsibility is simply to review the AI's final solution once it is complete. You will not intervene during the solving process.",
+        "instructions": "After the AI finishes, you will be asked whether the final answer looks correct. You are acting as a final evaluator, not a collaborator.",
+        "disclaimer": "⚠️ Important: AI can make mistakes. Critically evaluate the final solution.",
+        "your_role": [
+            "In this section, your responsibility is simply to <strong>review the AI's final solution</strong> once it is complete.",
+            "You will <strong>not intervene during the solving process</strong>.",
+            "After the AI finishes, you will be asked whether the final answer looks correct,",
+            "You are acting as a <strong>final evaluator</strong>, not a collaborator."
+        ],
+        "ai_role": [
+            {
+                "text": "The AI will:",
+                "sub_items": [
+                    "Work <strong>entirely on its own</strong>, from start to finish.",
+                    "Complete all reasoning steps, intermediate work, and the final answer",
+                    "Present you with the finished output once it is done."
+                ]
+            },
+            "The AI does <strong>not</strong> ask for feedback or approval during the task; it operates independently.",
+            "The AI only interacts with you <strong>after</strong> it has produced the full solution."
+        ]
     }
 }
 
