@@ -29,8 +29,8 @@
                 </div>
             </div>
             
-            <!-- AI Assistant Section (Hidden for LOA 1) -->
-            {% if loa != 1 %}
+            <!-- AI Assistant Section (Only for LOA 3 and 4) -->
+            {% if loa == 3 or loa == 4 %}
             <div class="ai-section">
                 <h3>🤖 AI Assistant</h3>
                 
@@ -56,23 +56,17 @@
                 </div>
                 
                 {% elif loa == 2 %}
-                <!-- LOA 2: Accept/Reject/Edit -->
+                <!-- LOA 2: Hint-Based System -->
                 <div class="loa2-controls">
-                    <h3>Review AI Suggestion:</h3>
-                    <div class="button-group">
-                        <button id="accept-btn" class="btn btn-success">✓ Accept</button>
-                        <button id="reject-btn" class="btn btn-danger">✗ Reject</button>
-                        <button id="edit-btn" class="btn btn-warning">✎ Edit</button>
-                    </div>
+                    <h3>Your Solution:</h3>
+                    <textarea id="user-solution" rows="4" placeholder="Enter your solution here... Click 'Get Hint' if you need help."></textarea>
                     
-                    <div id="edit-area" style="display: none;">
-                        <h4>Edit Solution:</h4>
-                        <textarea id="edited-solution" rows="4">{{ ai_solution }}</textarea>
-                    </div>
-                    
-                    <div id="reject-area" style="display: none;">
-                        <h4>Enter Your Solution:</h4>
-                        <textarea id="rejected-solution" rows="4" placeholder="Enter your own solution..."></textarea>
+                    <div class="hint-section">
+                        <button id="hint-btn" class="btn btn-primary">💡 Get Hint (<span id="hints-remaining">{{ puzzle.hints|length }}</span> remaining)</button>
+                        
+                        <div id="hints-container" style="margin-top: 15px;">
+                            <!-- Hints will appear here dynamically -->
+                        </div>
                     </div>
                 </div>
                 
@@ -230,45 +224,51 @@
             });
         }
         
-        // LOA 2: Management by Consent
+        // LOA 2: Hint-Based System
         if (LOA === 2) {
             decisionStartTime = Date.now();
             
-            document.getElementById('accept-btn').addEventListener('click', () => {
-                logInteraction('accept_ai_solution');
-                finalAnswer = '{{ ai_solution }}';
-                acceptedAdvice = true;
-                showSubmitButton();
-                document.querySelectorAll('.loa2-controls button').forEach(btn => btn.disabled = true);
+            const hints = {{ puzzle.hints | tojson }};
+            let currentHintIndex = 0;
+            
+            const textarea = document.getElementById('user-solution');
+            const hintBtn = document.getElementById('hint-btn');
+            const hintsContainer = document.getElementById('hints-container');
+            const hintsRemaining = document.getElementById('hints-remaining');
+            
+            // Track text input
+            textarea.addEventListener('input', () => {
+                logInteraction('text_input', { length: textarea.value.length });
             });
             
-            document.getElementById('reject-btn').addEventListener('click', () => {
-                logInteraction('reject_ai_solution');
-                document.getElementById('reject-area').style.display = 'block';
-                acceptedAdvice = false;
-                overridden = true;
-                
-                const textarea = document.getElementById('rejected-solution');
-                textarea.addEventListener('change', () => {
-                    finalAnswer = textarea.value;
-                    if (finalAnswer.trim().length > 0) {
-                        showSubmitButton();
-                    }
-                });
+            textarea.addEventListener('change', () => {
+                finalAnswer = textarea.value;
+                if (finalAnswer.trim().length > 0) {
+                    showSubmitButton();
+                }
             });
             
-            document.getElementById('edit-btn').addEventListener('click', () => {
-                logInteraction('edit_ai_solution');
-                document.getElementById('edit-area').style.display = 'block';
-                overridden = true;
-                
-                const textarea = document.getElementById('edited-solution');
-                textarea.addEventListener('change', () => {
-                    finalAnswer = textarea.value;
-                    if (finalAnswer.trim().length > 0) {
-                        showSubmitButton();
+            // Hint button logic
+            hintBtn.addEventListener('click', () => {
+                if (currentHintIndex < hints.length) {
+                    const hintDiv = document.createElement('div');
+                    hintDiv.className = 'hint-item';
+                    hintDiv.innerHTML = `<strong>Hint ${currentHintIndex + 1}:</strong> ${hints[currentHintIndex]}`;
+                    hintsContainer.appendChild(hintDiv);
+                    
+                    logInteraction('request_hint', { 
+                        hint_number: currentHintIndex + 1,
+                        hint_text: hints[currentHintIndex]
+                    });
+                    
+                    currentHintIndex++;
+                    hintsRemaining.textContent = hints.length - currentHintIndex;
+                    
+                    if (currentHintIndex >= hints.length) {
+                        hintBtn.disabled = true;
+                        hintBtn.textContent = '💡 No more hints';
                     }
-                });
+                }
             });
         }
         

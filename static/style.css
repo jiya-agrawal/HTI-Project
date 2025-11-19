@@ -513,6 +513,49 @@ textarea:focus {
     margin-top: 10px;
 }
 
+/* Hint System for LOA 2 */
+.hint-section {
+    margin-top: 20px;
+}
+
+.hint-item {
+    background: #e3f2fd;
+    border-left: 4px solid #2196f3;
+    padding: 12px 15px;
+    margin: 10px 0;
+    border-radius: 4px;
+    animation: slideIn 0.3s ease-out;
+}
+
+.hint-item strong {
+    color: #1976d2;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.btn-info {
+    background: #2196f3;
+    border: none;
+}
+
+.btn-info:hover:not(:disabled) {
+    background: #1976d2;
+}
+
+.btn-info:disabled {
+    background: #b0bec5;
+    cursor: not-allowed;
+}
+
 .final-solution-display {
     background: #e8f5e9;
     padding: 20px;

@@ -314,6 +314,9 @@ def submit_puzzle():
     # Build action sequence from interactions
     action_sequence = [i['type'] for i in puzzle_info['interactions']]
     
+    # Count hints used for LOA 2
+    hints_used = sum(1 for i in puzzle_info['interactions'] if i['type'] == 'request_hint')
+    
     # Log to CSV
     log_data = {
         "participant_id": session['participant_id'],
@@ -328,6 +331,7 @@ def submit_puzzle():
         "action_sequence": action_sequence,
         "accepted_advice": accepted_advice,
         "overridden": overridden,
+        "hints_used": hints_used,
         "edit_distance": edit_distance,
         "final_correctness": final_correctness,
         "trust_score": trust_score,
