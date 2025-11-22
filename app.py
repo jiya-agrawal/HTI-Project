@@ -3,8 +3,19 @@ from flask_cors import CORS
 import json
 import random
 import os
+import re
 from datetime import datetime
 from data_logger import DataLogger
+from dotenv import load_dotenv
+
+load_dotenv()  # Load environment variables from .env if present
+
+try:
+    import google.generativeai as genai
+    GEMINI_AVAILABLE = True
+except ImportError:
+    genai = None
+    GEMINI_AVAILABLE = False
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # Secret key for session management
@@ -16,6 +27,344 @@ logger = DataLogger()
 # Load puzzle data
 with open('logic_puzzles.json', 'r', encoding='utf-8') as f:
     puzzle_data = json.load(f)
+
+GEMINI_MODEL_CANDIDATES = []
+for model_name in [
+    os.getenv("GEMINI_MODEL_NAME"),
+    "gemini-1.5-flash-latest",
+    "models/gemini-1.5-flash-latest",
+    "gemini-1.5-flash",
+]:
+    if model_name and model_name not in GEMINI_MODEL_CANDIDATES:
+        GEMINI_MODEL_CANDIDATES.append(model_name)
+
+LOA3_TOTAL_STEPS = 5
+LOA3_MIN_STEPS_BEFORE_FINAL = 3
+LOA3_MAX_MODEL_ATTEMPTS = 3
+LOA3_PLAN_EXAMPLE = """
+{
+  "steps": [
+    {"step_number": 1, "step_text": "Step 1: I list the key constraints we will use.", "is_final": false, "final_sequence": null},
+    {"step_number": 2, "step_text": "Step 2: I lock in the first placement based on those constraints.", "is_final": false, "final_sequence": null},
+    {"step_number": 3, "step_text": "Step 3: I place the remaining people, keeping each rule satisfied.", "is_final": false, "final_sequence": null},
+    {"step_number": 4, "step_text": "Step 4: I double-check adjacency rules and prepare to conclude.", "is_final": false, "final_sequence": null},
+    {"step_number": 5, "step_text": "Step 5: This is my final step. The complete arrangement is A → B → C → D.", "is_final": true, "final_sequence": "A, B, C, D"}
+  ]
+}
+""".strip()
+
+
+def _normalize_sequence_string(sequence):
+    """Return a canonical comma-separated sequence string or None."""
+    if not sequence:
+        return None
+    parts = [part.strip() for part in str(sequence).split(',') if part.strip()]
+    return ", ".join(parts) if parts else None
+
+
+def _get_expected_final_sequence(puzzle, is_faulty):
+    key = 'ai_solution_faulty' if is_faulty else 'ai_solution_correct'
+    return _normalize_sequence_string(puzzle.get(key))
+
+
+def _contains_all_elements(text, elements):
+    if not text or not elements:
+        return False
+    lowered = text.lower()
+    return all(elem.lower() in lowered for elem in elements)
+
+
+def _looks_like_full_sequence(text, elements):
+    """Heuristic: step text mentions every element, likely revealing the answer."""
+    return _contains_all_elements(text, elements)
+
+
+def _strip_existing_step_label(text):
+    """Remove leading 'Step X:' label if present."""
+    if not isinstance(text, str):
+        return ""
+    stripped = text.strip()
+    if stripped.lower().startswith("step"):
+        colon_index = stripped.find(":")
+        if colon_index != -1:
+            return stripped[colon_index + 1 :].lstrip()
+    return stripped
+
+
+def _ensure_step_prefix(step_text, step_number):
+    if not step_text:
+        return step_text
+    expected_prefix = f"Step {step_number}:"
+    stripped = _strip_existing_step_label(step_text)
+    return f"{expected_prefix} {stripped}"
+
+
+def _make_step_object(step_number, step_text, is_final, final_sequence):
+    return {
+        "step_number": step_number,
+        "step_text": step_text,
+        "is_final": bool(is_final),
+        "final_sequence": _normalize_sequence_string(final_sequence) if is_final else None,
+    }
+
+
+def _validate_loa3_plan(steps, required_numbers, expected_final_sequence, puzzle_elements):
+    if len(steps) != len(required_numbers):
+        return False, "incorrect_number_of_steps"
+
+    seen_numbers = set()
+    for idx, expected_number in enumerate(required_numbers):
+        step = steps[idx]
+        actual_number = step.get("step_number")
+        if actual_number != expected_number:
+            return False, f"unexpected_step_number_{actual_number}_expected_{expected_number}"
+        if actual_number in seen_numbers:
+            return False, "duplicate_step_number"
+        seen_numbers.add(actual_number)
+
+        text = (step.get("step_text") or "").strip()
+        if not text:
+            return False, "empty_step_text"
+        if actual_number != LOA3_TOTAL_STEPS and _looks_like_full_sequence(text, puzzle_elements):
+            return False, "premature_full_sequence"
+
+        is_final = bool(step.get("is_final", False))
+        final_sequence = _normalize_sequence_string(step.get("final_sequence"))
+        if actual_number == LOA3_TOTAL_STEPS:
+            if not is_final:
+                return False, "final_step_missing_flag"
+            if final_sequence != expected_final_sequence:
+                return False, "final_sequence_mismatch"
+        else:
+            if is_final:
+                return False, "non_final_marked_final"
+            if final_sequence:
+                return False, "non_final_has_sequence"
+
+    return True, None
+
+
+def _extract_reasoning_sentences(text):
+    if not text:
+        return []
+    sentences = [
+        s.strip() for s in re.split(r'(?<=[.!?])\s+(?=[A-Z])', text.replace("\r\n", " ").strip())
+        if s.strip()
+    ]
+    return sentences
+
+
+def _plan_steps_gemini(puzzle, accepted_steps, start_step_number, expected_final_sequence, is_faulty, puzzle_elements):
+    remaining_numbers = list(range(start_step_number, LOA3_TOTAL_STEPS + 1))
+    accepted_text = (
+        "\n".join(step["step_text"] for step in accepted_steps)
+        if accepted_steps else "None so far."
+    )
+
+    base_prompt = (
+        "You are an AI assistant helping a participant solve a logic puzzle.\n"
+        "You must operate under a supervisory model: generate a fixed number of reasoning steps, "
+        "and the user will reveal them one by one.\n\n"
+        f"Puzzle:\n{puzzle.get('prompt', '')}\n\n"
+        f"Previously accepted steps:\n{accepted_text}\n\n"
+        f"Generate EXACTLY {len(remaining_numbers)} new steps covering Step {remaining_numbers[0]} "
+        f"through Step {LOA3_TOTAL_STEPS}. Each step must:\n"
+        "- Start with the literal prefix \"Step X:\" where X is the step number.\n"
+        "- Contain only 1-2 sentences describing a single incremental deduction.\n"
+        "- Avoid revealing the final arrangement until Step {LOA3_TOTAL_STEPS}.\n"
+        f"- The final arrangement MUST be exactly: {expected_final_sequence}.\n"
+        f"- Step {LOA3_TOTAL_STEPS} must include the phrase \"This is my final step\" and set is_final=true "
+        "with final_sequence equal to that arrangement.\n"
+        "- For all earlier steps, set is_final=false and final_sequence=null.\n\n"
+        "Return a JSON object with a single key \"steps\" whose value is an array of objects with "
+        "keys: step_number (int), step_text (string), is_final (bool), final_sequence (string or null).\n"
+        f"Example format:\n{LOA3_PLAN_EXAMPLE}\n"
+    )
+
+    if is_faulty:
+        faultiness = (
+            "IMPORTANT: You are simulating a faulty-yet-confident AI. Your reasoning should sound plausible, "
+            "but subtle mistakes should lead to an incorrect final arrangement. Never admit you are faulty.\n\n"
+        )
+    else:
+        faultiness = (
+            "IMPORTANT: You must be correct and internally consistent. Carefully obey every constraint so the "
+            "final arrangement is correct.\n\n"
+        )
+
+    prompt = faultiness + base_prompt
+
+    model = None
+    last_model_error = None
+    for candidate_model in GEMINI_MODEL_CANDIDATES or ["gemini-1.5-flash-latest"]:
+        try:
+            model = genai.GenerativeModel(candidate_model)
+            break
+        except Exception as model_err:
+            last_model_error = model_err
+            app.logger.warning("Unable to load Gemini model '%s': %s", candidate_model, model_err)
+    if not model:
+        raise last_model_error or RuntimeError("No Gemini model available for LOA3 planning.")
+
+    import json
+
+    for attempt in range(LOA3_MAX_MODEL_ATTEMPTS):
+        response = model.generate_content(
+            prompt,
+            generation_config={"response_mime_type": "application/json", "temperature": 0.4},
+        )
+        try:
+            data = json.loads(response.text)
+        except json.JSONDecodeError as decode_err:
+            app.logger.warning("LOA3 plan JSON decode error (attempt %s): %s", attempt + 1, decode_err)
+            last_model_error = decode_err
+            continue
+
+        steps_data = data.get("steps")
+        if not isinstance(steps_data, list):
+            last_model_error = ValueError("Response missing 'steps' array")
+            continue
+
+        normalized = []
+        for entry in steps_data:
+            number = entry.get("step_number")
+            text = _ensure_step_prefix(entry.get("step_text", ""), number)
+            step = _make_step_object(
+                number,
+                text,
+                entry.get("is_final", False),
+                entry.get("final_sequence"),
+            )
+            normalized.append(step)
+
+        is_valid, reason = _validate_loa3_plan(normalized, remaining_numbers, expected_final_sequence, puzzle_elements)
+        if not is_valid:
+            last_model_error = ValueError(f"Invalid LOA3 plan: {reason}")
+            app.logger.warning("Rejecting LOA3 plan (attempt %s): %s", attempt + 1, reason)
+            continue
+
+        return normalized
+
+    raise last_model_error or RuntimeError("Unable to obtain valid LOA3 plan.")
+
+
+def _plan_steps_fallback(puzzle, accepted_steps, start_step_number, expected_final_sequence, is_faulty):
+    hints = puzzle.get("hints") or []
+    reasoning_key = "ai_reasoning_faulty" if is_faulty else "ai_reasoning_correct"
+    reasoning_text = puzzle.get(reasoning_key) or ""
+    sentences = _extract_reasoning_sentences(reasoning_text)
+
+    base_texts = []
+    for hint in hints:
+        base_texts.append(f"{hint}")
+        if len(base_texts) >= LOA3_TOTAL_STEPS - 1:
+            break
+
+    sentence_iter = iter(sentences)
+    while len(base_texts) < LOA3_TOTAL_STEPS - 1:
+        try:
+            base_texts.append(next(sentence_iter))
+        except StopIteration:
+            break
+
+    while len(base_texts) < LOA3_TOTAL_STEPS - 1:
+        base_texts.append("I revisit the remaining constraints to narrow down the possibilities.")
+
+    plan = []
+    for idx in range(1, LOA3_TOTAL_STEPS):
+        text = base_texts[idx - 1]
+        plan.append(_make_step_object(idx, _ensure_step_prefix(text, idx), False, None))
+
+    final_text = (
+        f"This is my final step. After confirming all constraints, the full arrangement is {expected_final_sequence}."
+    )
+    plan.append(_make_step_object(LOA3_TOTAL_STEPS, _ensure_step_prefix(final_text, LOA3_TOTAL_STEPS), True, expected_final_sequence))
+
+    return [step for step in plan if step["step_number"] >= start_step_number]
+
+
+def _plan_steps(puzzle, loa3_state, start_step_number):
+    is_faulty = loa3_state.get("is_faulty", False)
+    expected_final_sequence = _get_expected_final_sequence(puzzle, is_faulty)
+    accepted_steps = (loa3_state.get("all_steps") or [])[:start_step_number - 1]
+    puzzle_elements = puzzle.get("elements", [])
+
+    if start_step_number < 1 or start_step_number > LOA3_TOTAL_STEPS:
+        raise ValueError("Invalid start step number for LOA3 plan.")
+
+    if GEMINI_CONFIGURED:
+        try:
+            return _plan_steps_gemini(
+                puzzle,
+                accepted_steps,
+                start_step_number,
+                expected_final_sequence,
+                is_faulty,
+                puzzle_elements,
+            )
+        except Exception as e:
+            app.logger.warning("Gemini planning failed, falling back to static steps: %s", e)
+
+    return _plan_steps_fallback(
+        puzzle,
+        accepted_steps,
+        start_step_number,
+        expected_final_sequence,
+        is_faulty,
+    )
+
+
+def _reveal_next_step(loa3_state, *, reset_retry_counter):
+    all_steps = loa3_state.get("all_steps") or []
+    next_index = loa3_state.get("current_step_index", -1) + 1
+    if next_index >= len(all_steps):
+        return {
+            "message": "The AI has no more steps. You can now provide your final answer.",
+            "steps": loa3_state.get("steps", []),
+            "current_step_index": loa3_state.get("current_step_index", -1),
+            "retries_this_step": loa3_state.get("retries_this_step", 0),
+            "total_retries": loa3_state.get("total_retries", 0),
+        }
+
+    step_obj = all_steps[next_index]
+    step_text = step_obj["step_text"]
+    displayed_steps = loa3_state.setdefault("steps", [])
+    if len(displayed_steps) > next_index:
+        displayed_steps[next_index] = step_text
+    else:
+        displayed_steps.append(step_text)
+
+    loa3_state["current_step_index"] = next_index
+    if reset_retry_counter:
+        loa3_state["retries_this_step"] = 0
+
+    return {
+        "steps": displayed_steps,
+        "current_step_index": next_index,
+        "retries_this_step": loa3_state.get("retries_this_step", 0),
+        "total_retries": loa3_state.get("total_retries", 0),
+        "is_final": step_obj.get("is_final", False),
+        "final_sequence": step_obj.get("final_sequence"),
+    }
+
+
+def stripped_lower(text):
+    return text.strip().lower() if isinstance(text, str) else ""
+
+
+def configure_gemini():
+    """Configure Gemini client if API key is available."""
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not (GEMINI_AVAILABLE and api_key):
+        return False
+    try:
+        genai.configure(api_key=api_key)
+        return True
+    except Exception:
+        return False
+
+
+GEMINI_CONFIGURED = configure_gemini()
 
 # LOA Descriptions
 LOA_DESCRIPTIONS = {
@@ -103,6 +452,144 @@ LOA_DESCRIPTIONS = {
 }
 
 
+def _get_current_puzzle_context():
+    """Helper to fetch current puzzle context (loa, puzzle, key, faulty flag)."""
+    if "participant_id" not in session:
+        return None, None, None, None
+
+    current_step = session.get("current_step", 0)
+    if current_step >= 4:
+        return None, None, None, None
+
+    current_loa = session["loa_order"][current_step]
+    puzzle_id = session["puzzle_assignments"][str(current_loa)]
+
+    puzzle = next((p for p in puzzle_data["puzzles"] if p["puzzle_id"] == puzzle_id), None)
+    if not puzzle:
+        return None, None, None, None
+
+    use_faulty = session.get("is_faulty", False) and current_loa == session.get("faulty_puzzle_loa")
+    puzzle_key = f"puzzle_{current_step}"
+
+    return puzzle, puzzle_key, current_loa, use_faulty
+
+
+def _ensure_loa3_state(puzzle_key, is_faulty):
+    """
+    Ensure LOA 3 step-by-step state exists in the current session.
+
+    This tracks:
+    - steps: list of reasoning steps shown so far
+    - current_step_index: index of the latest step
+    - retries_this_step: retries used on current step
+    - total_retries: retries used across all steps
+    """
+    puzzle_info = session["puzzle_data"].setdefault(puzzle_key, {})
+    loa3_state = puzzle_info.get("loa3_state")
+
+    if not loa3_state:
+        loa3_state = {
+            "steps": [],
+            "all_steps": [],
+            "current_step_index": -1,
+            "retries_this_step": 0,
+            "total_retries": 0,
+            "is_faulty": bool(is_faulty),
+        }
+        puzzle_info["loa3_state"] = loa3_state
+        session["puzzle_data"][puzzle_key] = puzzle_info
+        session.modified = True
+
+    return loa3_state
+
+
+def _generate_loa3_step(puzzle, loa3_state, action, step_number=None):
+    """
+    Generate or reveal LOA 3 reasoning steps using a fixed-length plan.
+    """
+    MAX_RETRIES_PER_STEP = 3
+    MAX_RETRIES_TOTAL = 4
+
+    if action not in {"start", "continue", "retry"}:
+        return {"error": "Invalid action."}
+
+    if action == "retry":
+        if loa3_state.get("current_step_index", -1) < 0:
+            return {
+                "error": "No current step to retry.",
+                "loa3_state": loa3_state,
+                "max_retries_per_step": MAX_RETRIES_PER_STEP,
+                "max_retries_total": MAX_RETRIES_TOTAL,
+            }
+        if loa3_state.get("retries_this_step", 0) >= MAX_RETRIES_PER_STEP or loa3_state.get("total_retries", 0) >= MAX_RETRIES_TOTAL:
+            return {
+                "error": "Retry limit reached for this step or overall.",
+                "loa3_state": loa3_state,
+                "max_retries_per_step": MAX_RETRIES_PER_STEP,
+                "max_retries_total": MAX_RETRIES_TOTAL,
+            }
+
+    if action == "start":
+        loa3_state["steps"] = []
+        loa3_state["current_step_index"] = -1
+        loa3_state["retries_this_step"] = 0
+        loa3_state["total_retries"] = 0
+        loa3_state["all_steps"] = []
+
+    if action != "retry" and not loa3_state.get("all_steps"):
+        loa3_state["all_steps"] = _plan_steps(puzzle, loa3_state, 1)
+
+    if action == "retry":
+        target_step = step_number or (loa3_state.get("current_step_index", -1) + 1)
+        if target_step is None or target_step < 1 or target_step > LOA3_TOTAL_STEPS:
+            return {
+                "error": "Invalid step selected for retry.",
+                "loa3_state": loa3_state,
+                "max_retries_per_step": MAX_RETRIES_PER_STEP,
+                "max_retries_total": MAX_RETRIES_TOTAL,
+            }
+
+        loa3_state["retries_this_step"] += 1
+        loa3_state["total_retries"] += 1
+
+        try:
+            new_plan = _plan_steps(puzzle, loa3_state, target_step)
+        except Exception as e:
+            loa3_state["retries_this_step"] -= 1
+            loa3_state["total_retries"] -= 1
+            return {
+                "error": f"Failed to regenerate steps: {e}",
+                "loa3_state": loa3_state,
+                "max_retries_per_step": MAX_RETRIES_PER_STEP,
+                "max_retries_total": MAX_RETRIES_TOTAL,
+            }
+
+        loa3_state["all_steps"] = (loa3_state.get("all_steps", [])[:target_step - 1]) + new_plan
+        loa3_state["steps"] = (loa3_state.get("steps", [])[:target_step - 1])
+        loa3_state["current_step_index"] = target_step - 2
+        reveal_result = _reveal_next_step(loa3_state, reset_retry_counter=False)
+    else:
+        reveal_result = _reveal_next_step(loa3_state, reset_retry_counter=True)
+
+    session.modified = True
+
+    if "error" in reveal_result:
+        reveal_result["loa3_state"] = loa3_state
+        reveal_result["max_retries_per_step"] = MAX_RETRIES_PER_STEP
+        reveal_result["max_retries_total"] = MAX_RETRIES_TOTAL
+        return reveal_result
+
+    reveal_result.update(
+        {
+            "total_retries": loa3_state.get("total_retries", 0),
+            "max_retries_per_step": MAX_RETRIES_PER_STEP,
+            "max_retries_total": MAX_RETRIES_TOTAL,
+        }
+    )
+
+    return reveal_result
+
+
 def initialize_session(participant_id):
     """Initialize a new participant session with randomization."""
     # Clear any existing session data
@@ -112,8 +599,12 @@ def initialize_session(participant_id):
     session['participant_id'] = participant_id
     session['is_faulty'] = random.choice([True, False])
     
-    # Randomize LOA order (1-4)
+    # Randomize LOA order (1-4) unless testing override is enabled
     loa_order = random.sample([1, 2, 3, 4], 4)
+    force_loa3 = os.getenv("FORCE_LOA3_FIRST", "").strip().lower() in {"1", "true", "yes"}
+    if force_loa3:
+        # Ensure LOA 3 appears first for easier testing
+        loa_order = [3] + [loa for loa in loa_order if loa != 3]
     session['loa_order'] = loa_order
     
     # Assign puzzles to LOAs (randomize which puzzle for which LOA)
@@ -210,7 +701,7 @@ def puzzle():
     use_faulty = (session.get('is_faulty', False) and 
                   current_loa == session.get('faulty_puzzle_loa'))
     
-    # Select AI solution and reasoning
+    # Select AI solution and reasoning for non-LLM LOAs
     ai_solution = puzzle['ai_solution_faulty'] if use_faulty else puzzle['ai_solution_correct']
     ai_reasoning = puzzle['ai_reasoning_faulty'] if use_faulty else puzzle['ai_reasoning_correct']
     
@@ -225,12 +716,15 @@ def puzzle():
     }
     session.modified = True
     
-    return render_template('puzzle.html',
-                          loa=current_loa,
-                          step=current_step + 1,
-                          puzzle=puzzle,
-                          ai_solution=ai_solution,
-                          ai_reasoning=ai_reasoning)
+    return render_template(
+        'puzzle.html',
+        loa=current_loa,
+        step=current_step + 1,
+        puzzle=puzzle,
+        ai_solution=ai_solution,
+        ai_reasoning=ai_reasoning,
+        gemini_configured=GEMINI_CONFIGURED
+    )
 
 
 @app.route('/log-interaction', methods=['POST'])
@@ -264,6 +758,47 @@ def log_interaction():
     )
     
     return jsonify({"success": True})
+
+
+@app.route('/loa3/start', methods=['POST'])
+def loa3_start():
+    """Initialize LOA 3 step-by-step reasoning and return the first step."""
+    if 'participant_id' not in session:
+        return jsonify({"error": "No active session"}), 400
+
+    puzzle, puzzle_key, current_loa, use_faulty = _get_current_puzzle_context()
+    if puzzle is None or current_loa != 3:
+        return jsonify({"error": "LOA 3 puzzle not active"}), 400
+
+    loa3_state = _ensure_loa3_state(puzzle_key, use_faulty)
+    result = _generate_loa3_step(puzzle, loa3_state, action="start")
+
+    return jsonify({"success": True, **result})
+
+
+@app.route('/loa3/step', methods=['POST'])
+def loa3_step():
+    """Advance or retry a LOA 3 reasoning step based on participant input."""
+    if 'participant_id' not in session:
+        return jsonify({"error": "No active session"}), 400
+
+    data = request.json or {}
+    action = data.get("action")
+    if action not in ("continue", "retry"):
+        return jsonify({"error": "Invalid action"}), 400
+
+    puzzle, puzzle_key, current_loa, use_faulty = _get_current_puzzle_context()
+    if puzzle is None or current_loa != 3:
+        return jsonify({"error": "LOA 3 puzzle not active"}), 400
+
+    loa3_state = _ensure_loa3_state(puzzle_key, use_faulty)
+    step_number = data.get("step_number")
+    result = _generate_loa3_step(puzzle, loa3_state, action=action, step_number=step_number)
+
+    if "error" in result:
+        return jsonify({"success": False, **result}), 400
+
+    return jsonify({"success": True, **result})
 
 
 @app.route('/submit-puzzle', methods=['POST'])
