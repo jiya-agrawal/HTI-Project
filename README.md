@@ -26,7 +26,7 @@ Participants solve logic-based seating arrangement puzzles under different level
 
 1. **LOA 1 - Manual Control:** Participant solves puzzle independently
 2. **LOA 2 - Management by Consent:** AI suggests solution, participant accepts/rejects/edits
-3. **LOA 3 - Management by Exception:** AI auto-solves, participant can intervene
+3. **LOA 3 - Step-by-Step Supervision:** AI plans five micro-steps, pauses for user approval, and supports Continue/Retry at each step.
 4. **LOA 4 - Full Automation:** AI solves automatically, participant observes
 
 ### 📊 Automatic Data Collection
@@ -65,12 +65,21 @@ The system logs:
    cd "d:\SEMESTER7\HTI\Project"
    ```
 
-2. **Install required Python packages:**
+2. **Create/Update `.env` (in repo root):**
+   ```
+   GEMINI_API_KEY=your_key_here
+   GEMINI_MODEL_NAME=models/gemini-2.5-flash   # optional but recommended
+   FORCE_LOA3_FIRST=false                     # leave false for normal randomized sessions
+   ```
+   - Do NOT commit `.env`. Toggle `FORCE_LOA3_FIRST=true` only when you need LOA 3 first for manual testing.
+
+3. **Install required Python packages:**
    ```powershell
    pip install -r requirements.txt
    ```
+   Make sure `google-generativeai` installs cleanly; it powers the LOA 3 step planner.
 
-3. **Verify the directory structure:**
+4. **Verify the directory structure:**
    ```
    Project/
    ├── app.py                    # Main Flask application
@@ -109,10 +118,12 @@ The server will start at: **http://localhost:5000**
 3. Enter participant ID when prompted (e.g., `P001`, `P002`, etc.)
 4. Follow the on-screen instructions
 
-### For Testing
-
-To reset the session and start fresh:
-- Visit: `http://localhost:5000/reset-session`
+### LOA 3 Step-by-Step Flow
+- Click **Start AI** to fetch Step 1 only.
+- Use **Continue** to reveal each subsequent micro-step.
+- Use **Retry** to regenerate the current step (and the remaining steps) when you disagree; the new step highlights green. The button disables until the new reasoning arrives and respects the retry limits (3 per step / 4 total).
+- Toggle the faulty condition by restarting / randomization; the final step auto-fills the drag-and-drop builder but can still be edited.
+- `/reset-session` clears the state when you need another run.
 
 ---
 
