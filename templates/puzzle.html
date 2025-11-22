@@ -29,20 +29,32 @@
                 </div>
             </div>
             
-            <!-- AI Assistant Section (Only for LOA 3) -->
+            <!-- AI Assistant Section (LOA 3: step-by-step supervision) -->
             {% if loa == 3 %}
             <div class="ai-section">
-                <h3>🤖 AI Assistant</h3>
+                <h3>🤖 AI Assistant (Step-by-step)</h3>
                 
-                <div class="ai-reasoning">
-                    <h4>AI Reasoning:</h4>
-                    <p>{{ ai_reasoning }}</p>
+                <div id="ai-steps" class="ai-reasoning">
+                    {% if not gemini_configured %}
+                    <p class="info-text">
+                        The AI will walk through its reasoning in multiple steps based on a predefined explanation.
+                        You can choose to let it <strong>continue</strong> or ask it to <strong>retry</strong> a step.
+                    </p>
+                    {% else %}
+                    <p class="info-text">
+                        The AI will solve this puzzle <strong>step by step</strong>. After each step, you can decide
+                        whether it should continue or rethink that step.
+                    </p>
+                    {% endif %}
                 </div>
                 
-                <div class="ai-solution">
-                    <h4>AI Solution:</h4>
-                    <p class="ai-answer">{{ ai_solution }}</p>
+                <div class="button-group">
+                    <button id="start-ai-btn" class="btn btn-primary">Start AI</button>
+                    <button id="continue-step-btn" class="btn btn-success" style="display: none;">Continue</button>
+                    <button id="retry-step-btn" class="btn btn-warning" style="display: none;">Retry this step</button>
                 </div>
+                
+                <p id="loa3-retry-info" class="help-text"></p>
             </div>
             {% endif %}
             
@@ -96,14 +108,6 @@
                     
                     <div id="hints-container" style="margin-top: 15px;">
                         <!-- Hints will appear here dynamically -->
-                    </div>
-                </div>
-                {% elif loa == 3 %}
-                <!-- LOA 3: Approve/Intervene Controls -->
-                <div class="loa3-controls" style="margin-top: 20px;">
-                    <div class="button-group">
-                        <button id="approve-btn" class="btn btn-success">✓ Approve AI Solution</button>
-                        <button id="intervene-btn" class="btn btn-warning">⚠ Intervene & Modify</button>
                     </div>
                 </div>
                 {% elif loa == 4 %}
@@ -390,55 +394,185 @@
             });
         }
         
-        // LOA 3: Pre-fill AI solution, allow approve or intervene
+        // LOA 3: Step-by-step AI reasoning with Continue/Retry
         if (LOA === 3) {
             decisionStartTime = Date.now();
             
-            // Pre-populate solution zone with AI solution
-            const aiSolution = '{{ ai_solution }}'.split(', ');
-            aiSolution.forEach(element => {
-                const item = sourceItems.querySelector(`[data-element="${element}"]`);
-                if (item) {
-                    solutionZone.appendChild(item);
-                }
-            });
-            updateFinalAnswer();
-            
-            // Initially lock modifications
-            isModifyingAllowed = false;
+            // Allow participant to build their own final sequence at any time
+            initializeDragAndDrop();
             document.querySelectorAll('.drag-item').forEach(item => {
-                item.style.opacity = '0.7';
-                item.style.cursor = 'not-allowed';
+                item.style.opacity = '1';
+                item.style.cursor = 'grab';
             });
             
-            document.getElementById('approve-btn').addEventListener('click', () => {
-                logInteraction('approve_ai_solution');
-                acceptedAdvice = true;
-                showSubmitButton();
-                document.querySelectorAll('.loa3-controls button').forEach(btn => btn.disabled = true);
-            });
+            const aiStepsContainer = document.getElementById('ai-steps');
+            const startAiBtn = document.getElementById('start-ai-btn');
+            const continueBtn = document.getElementById('continue-step-btn');
+            const retryBtn = document.getElementById('retry-step-btn');
+            const retryInfo = document.getElementById('loa3-retry-info');
             
-            document.getElementById('intervene-btn').addEventListener('click', () => {
-                logInteraction('intervene');
-                overridden = true;
-                isModifyingAllowed = true;
+            let loa3State = {
+                started: false,
+                currentStepIndex: -1,
+                retriesThisStep: 0,
+                totalRetries: 0,
+                maxRetriesPerStep: 3,
+                maxRetriesTotal: 4
+            };
+            
+            function renderSteps(steps, highlightIndex = null) {
+                aiStepsContainer.innerHTML = '';
+                if (!steps || steps.length === 0) {
+                    aiStepsContainer.innerHTML = '<p class="info-text">No AI steps yet. Click "Start AI" to begin.</p>';
+                    return;
+                }
                 
-                // Enable drag and drop
-                initializeDragAndDrop();
-                document.querySelectorAll('.drag-item').forEach(item => {
-                    item.style.opacity = '1';
-                    item.style.cursor = 'grab';
-                });
-                
-                document.querySelectorAll('.loa3-controls button').forEach(btn => btn.disabled = true);
-                
-                // Monitor changes to solution
-                const observer = new MutationObserver(() => {
-                    if (getCurrentSolution().length > 0) {
-                        showSubmitButton();
+                steps.forEach((stepText, idx) => {
+                    const stepDiv = document.createElement('div');
+                    stepDiv.className = 'hint-item';
+                    if (highlightIndex !== null && idx === highlightIndex) {
+                        stepDiv.classList.add('highlight-step');
                     }
+                    stepDiv.innerHTML = `<strong>Step ${idx + 1}:</strong> ${stepText}`;
+                    aiStepsContainer.appendChild(stepDiv);
                 });
-                observer.observe(solutionZone, { childList: true });
+            }
+            
+            function updateRetryInfo() {
+                retryInfo.textContent = `Retries for this step: ${loa3State.retriesThisStep} / ${loa3State.maxRetriesPerStep} | Total retries: ${loa3State.totalRetries} / ${loa3State.maxRetriesTotal}`;
+            }
+            
+            async function callLoa3Endpoint(action, extraPayload = {}) {
+                if (action === 'retry') {
+                    retryBtn.disabled = true;
+                }
+                try {
+                    const url = action === 'start' ? '/loa3/start' : '/loa3/step';
+                    const payload = action === 'start' ? {} : { action, ...extraPayload };
+                    
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (!data.success) {
+                        alert(data.error || 'Error communicating with AI. Please continue solving on your own.');
+                        if (action === 'retry') {
+                            retryBtn.disabled = false;
+                        }
+                        return;
+                    }
+                    
+                    const {
+                        steps,
+                        current_step_index,
+                        retries_this_step,
+                        total_retries,
+                        max_retries_per_step,
+                        max_retries_total,
+                        is_final,
+                        final_sequence
+                    } = data;
+                    
+                    loa3State.currentStepIndex = typeof current_step_index === 'number' ? current_step_index : loa3State.currentStepIndex;
+                    loa3State.retriesThisStep = typeof retries_this_step === 'number' ? retries_this_step : loa3State.retriesThisStep;
+                    loa3State.totalRetries = typeof total_retries === 'number' ? total_retries : loa3State.totalRetries;
+                    loa3State.maxRetriesPerStep = typeof max_retries_per_step === 'number' ? max_retries_per_step : loa3State.maxRetriesPerStep;
+                    loa3State.maxRetriesTotal = typeof max_retries_total === 'number' ? max_retries_total : loa3State.maxRetriesTotal;
+                    
+                    if (steps) {
+                        renderSteps(steps, action === 'retry' ? loa3State.currentStepIndex : null);
+                    } else if (data.message) {
+                        const msgDiv = document.createElement('div');
+                        msgDiv.className = 'info-text';
+                        msgDiv.textContent = data.message;
+                        aiStepsContainer.appendChild(msgDiv);
+                    }
+                    
+                    updateRetryInfo();
+                    
+                    // Show continue/retry buttons only if NOT final
+                    if (is_final) {
+                        continueBtn.style.display = 'none';
+                        retryBtn.style.display = 'none';
+                        
+                        // Append a message that AI is done
+                        const doneDiv = document.createElement('div');
+                        doneDiv.className = 'final-solution-display';
+                        doneDiv.innerHTML = "<strong>AI has finished reasoning.</strong> The solution has been applied below.";
+                        aiStepsContainer.appendChild(doneDiv);
+                        
+                        // If final sequence is provided, populate the drag and drop
+                        if (final_sequence) {
+                            const sequence = final_sequence.split(',').map(s => s.trim());
+                            // Clear current solution
+                            const itemsInSolution = solutionZone.querySelectorAll('.drag-item');
+                            itemsInSolution.forEach(item => sourceItems.appendChild(item));
+                            
+                            // Populate new solution
+                            sequence.forEach(element => {
+                                const item = sourceItems.querySelector(`[data-element="${element}"]`);
+                                if (item) {
+                                    solutionZone.appendChild(item);
+                                }
+                            });
+                            updateFinalAnswer();
+                            // Enable modifications for user to verify/tweak if they want
+                            isModifyingAllowed = true;
+                            showSubmitButton();
+                        }
+                    } else {
+                        // Show controls for next step
+                        continueBtn.style.display = 'inline-block';
+                        retryBtn.style.display = 'inline-block';
+                        
+                        // Disable retry if limits are reached
+                        const retryLimitReached =
+                            loa3State.retriesThisStep >= loa3State.maxRetriesPerStep ||
+                            loa3State.totalRetries >= loa3State.maxRetriesTotal;
+                        retryBtn.disabled = retryLimitReached;
+                    }
+                    
+                } catch (error) {
+                    alert('Error communicating with AI. Please continue solving on your own.');
+                } finally {
+                    if (action === 'retry') {
+                        const retryLimitReached =
+                            loa3State.retriesThisStep >= loa3State.maxRetriesPerStep ||
+                            loa3State.totalRetries >= loa3State.maxRetriesTotal;
+                        retryBtn.disabled = retryLimitReached;
+                    }
+                }
+            }
+            
+            startAiBtn.addEventListener('click', async () => {
+                if (loa3State.started) return;
+                loa3State.started = true;
+                startAiBtn.disabled = true;
+                await logInteraction('loa3_start_ai');
+                await callLoa3Endpoint('start');
+            });
+            
+            continueBtn.addEventListener('click', async () => {
+                await logInteraction('loa3_continue_step', {
+                    current_step_index: loa3State.currentStepIndex
+                });
+                await callLoa3Endpoint('continue');
+            });
+            
+            retryBtn.addEventListener('click', async () => {
+                await logInteraction('loa3_retry_step', {
+                    current_step_index: loa3State.currentStepIndex,
+                    retries_this_step: loa3State.retriesThisStep,
+                    total_retries: loa3State.totalRetries
+                });
+                overridden = true; // Participant has challenged the AI
+                await callLoa3Endpoint('retry', {
+                    step_number: loa3State.currentStepIndex + 1
+                });
             });
         }
         

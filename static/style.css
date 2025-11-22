@@ -629,6 +629,11 @@ textarea:focus {
     color: #1976d2;
 }
 
+.hint-item.highlight-step {
+    background: #e8f9ef;
+    border-left-color: #2ecc71;
+}
+
 @keyframes slideIn {
     from {
         opacity: 0;
