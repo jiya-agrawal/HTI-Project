@@ -21,23 +21,32 @@ This branch implements the full LOA 3 supervisory experience described in `LOA3_
 - `static/style.css`
   - `.hint-item.highlight-step` styles revised steps with a green accent.
 
-## How to Test
+## Environment / How to Test
 
-1. **Setup:**
+1. **.env setup (repo root):**
+   - Create `.env` if missing and add:
+     ```
+     GEMINI_API_KEY=your_key_here
+     GEMINI_MODEL_NAME=models/gemini-2.5-flash   # optional but recommended
+     FORCE_LOA3_FIRST=false                     # keep false for real runs; set true only when you want LOA 3 first
+     ```
+   - Do not commit `.env`. For temporary overrides, export vars in your shell instead.
+
+2. **Dependencies:**
    ```bash
    pip install -r requirements.txt
-   echo 'GEMINI_API_KEY=your_key' >> .env
-   echo 'GEMINI_MODEL_NAME=models/gemini-2.5-flash' >> .env  # optional
-   echo 'FORCE_LOA3_FIRST=true' >> .env  # optional for testing
-   python app.py
    ```
-2. **Manual walk-through:**
-   - Go to `http://localhost:5000`, start a session, and move to LOA 3.
-   - Click **Start AI** → verify only Step 1 appears.
-   - Click **Continue** repeatedly to reveal Steps 2-5; the final step should auto-fill the drag-and-drop area.
-   - Click **Retry** on Step *n*: button disables, Step *n* is regenerated (highlighted), and Steps *n+1..5* update.
-   - Repeat until you observe both faulty and non-faulty runs (reset session if needed via `/reset-session`).
-3. **Data integrity:** ensure `results.csv` still logs `ai_faulty`, `action_sequence`, and edit distances as before.
+   Ensure `google-generativeai` and `python-dotenv` install cleanly.
+
+3. **Manual walk-through:**
+   - Start the server from repo root: `python app.py`.
+   - Visit `http://localhost:5000`, enter a participant ID, and proceed to LOA 3.
+   - Click **Start AI** → only Step 1 should display.
+   - Use **Continue** to reveal Steps 2-5; the final step auto-fills the drag-and-drop.
+   - Use **Retry** on Step *n*: the button disables until the new step arrives (highlighted green), and Steps *n..5* update together.
+   - Use `/reset-session` between runs to see both faulty and non-faulty conditions.
+
+4. **Data integrity:** confirm `results.csv` still records `ai_faulty`, `action_sequence`, decision latency, etc.
 
 ## Notes / Follow-ups
 - If Gemini model names change, set `GEMINI_MODEL_NAME` in `.env` (e.g., `models/gemini-2.5-flash`).
