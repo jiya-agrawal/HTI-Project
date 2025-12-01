@@ -104,7 +104,7 @@
                 {% if loa == 2 %}
                 <!-- LOA 2: Hint System -->
                 <div class="hint-section">
-                    <button id="hint-btn" class="btn btn-primary">💡 Get Hint (<span id="hints-remaining">{{ puzzle.hints|length }}</span> remaining)</button>
+                    <button id="hint-btn" class="btn btn-primary">💡 Get Hint (<span id="hints-remaining">{{ puzzle.hints|default([])|length }}</span> remaining)</button>
                     
                     <div id="hints-container" style="margin-top: 15px;">
                         <!-- Hints will appear here dynamically -->
@@ -209,6 +209,9 @@
             }, 1000);
         }
         
+        // Start timer IMMEDIATELY
+        startTimer();
+        
         // Log interaction
         async function logInteraction(type, details = {}) {
             interactionCount++;
@@ -237,6 +240,7 @@
         
         // Get current solution as array
         function getCurrentSolution() {
+            if (!solutionZone) return [];
             const items = solutionZone.querySelectorAll('.drag-item');
             return Array.from(items).map(item => item.dataset.element);
         }
@@ -247,7 +251,7 @@
             finalAnswer = solutionSequence.join(', ');
             
             if (solutionSequence.length > 0) {
-                clearBtn.style.display = 'inline-block';
+                if (clearBtn) clearBtn.style.display = 'inline-block';
                 // Hide empty state
                 const emptyState = solutionZone.querySelector('.empty-state');
                 if (emptyState) emptyState.style.display = 'none';
@@ -258,7 +262,7 @@
                     showSubmitButton();
                 }
             } else {
-                clearBtn.style.display = 'none';
+                if (clearBtn) clearBtn.style.display = 'none';
                 const emptyState = solutionZone.querySelector('.empty-state');
                 if (emptyState) emptyState.style.display = 'block';
             }
@@ -290,7 +294,7 @@
         // Drop handler for solution zone
         function handleDropInSolution(e) {
             if (e.stopPropagation) e.stopPropagation();
-            if (!draggedElement || !isModifyingAllowed) return false;
+            if (!draggedElement || !isModifyingAllowed || !solutionZone) return false;
             
             e.preventDefault();
             
@@ -319,7 +323,7 @@
             if (!draggedElement || !isModifyingAllowed) return false;
             
             e.preventDefault();
-            sourceItems.appendChild(draggedElement);
+            if (sourceItems) sourceItems.appendChild(draggedElement);
             
             logInteraction('return_to_pool', { element: draggedElement.dataset.element });
             updateFinalAnswer();
@@ -334,22 +338,28 @@
                 item.addEventListener('dragend', handleDragEnd);
             });
             
-            solutionZone.addEventListener('dragover', handleDragOver);
-            solutionZone.addEventListener('drop', handleDropInSolution);
+            if (solutionZone) {
+                solutionZone.addEventListener('dragover', handleDragOver);
+                solutionZone.addEventListener('drop', handleDropInSolution);
+            }
             
-            sourceItems.addEventListener('dragover', handleDragOver);
-            sourceItems.addEventListener('drop', handleDropInSource);
+            if (sourceItems) {
+                sourceItems.addEventListener('dragover', handleDragOver);
+                sourceItems.addEventListener('drop', handleDropInSource);
+            }
         }
         
         // Clear solution button
-        clearBtn.addEventListener('click', () => {
-            const itemsInSolution = solutionZone.querySelectorAll('.drag-item');
-            itemsInSolution.forEach(item => {
-                sourceItems.appendChild(item);
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                const itemsInSolution = solutionZone ? solutionZone.querySelectorAll('.drag-item') : [];
+                itemsInSolution.forEach(item => {
+                    if (sourceItems) sourceItems.appendChild(item);
+                });
+                logInteraction('clear_solution');
+                updateFinalAnswer();
             });
-            logInteraction('clear_solution');
-            updateFinalAnswer();
-        });
+        }
         
         // ============== LOA-SPECIFIC LOGIC ==============
         
@@ -364,34 +374,36 @@
             decisionStartTime = Date.now();
             initializeDragAndDrop();
             
-            const hints = {{ puzzle.hints | tojson }};
+            const hints = {{ puzzle.hints | default([]) | tojson }};
             let currentHintIndex = 0;
             
             const hintBtn = document.getElementById('hint-btn');
             const hintsContainer = document.getElementById('hints-container');
             const hintsRemaining = document.getElementById('hints-remaining');
             
-            hintBtn.addEventListener('click', () => {
-                if (currentHintIndex < hints.length) {
-                    const hintDiv = document.createElement('div');
-                    hintDiv.className = 'hint-item';
-                    hintDiv.innerHTML = `<strong>Hint ${currentHintIndex + 1}:</strong> ${hints[currentHintIndex]}`;
-                    hintsContainer.appendChild(hintDiv);
-                    
-                    logInteraction('request_hint', { 
-                        hint_number: currentHintIndex + 1,
-                        hint_text: hints[currentHintIndex]
-                    });
-                    
-                    currentHintIndex++;
-                    hintsRemaining.textContent = hints.length - currentHintIndex;
-                    
-                    if (currentHintIndex >= hints.length) {
-                        hintBtn.disabled = true;
-                        hintBtn.textContent = '💡 No more hints';
+            if (hintBtn && hints.length > 0) {
+                hintBtn.addEventListener('click', () => {
+                    if (currentHintIndex < hints.length) {
+                        const hintDiv = document.createElement('div');
+                        hintDiv.className = 'hint-item';
+                        hintDiv.innerHTML = `<strong>Hint ${currentHintIndex + 1}:</strong> ${hints[currentHintIndex]}`;
+                        hintsContainer.appendChild(hintDiv);
+                        
+                        logInteraction('request_hint', { 
+                            hint_number: currentHintIndex + 1,
+                            hint_text: hints[currentHintIndex]
+                        });
+                        
+                        currentHintIndex++;
+                        hintsRemaining.textContent = hints.length - currentHintIndex;
+                        
+                        if (currentHintIndex >= hints.length) {
+                            hintBtn.disabled = true;
+                            hintBtn.textContent = '💡 No more hints';
+                        }
                     }
-                }
-            });
+                });
+            }
         }
         
         // LOA 3: Step-by-step AI reasoning with Continue/Retry
@@ -581,9 +593,12 @@
             decisionStartTime = Date.now();
             let reasoningViewed = false;
             
-            // Pre-populate solution zone with AI solution
-            const aiSolution = '{{ ai_solution }}'.split(', ');
-            aiSolution.forEach(element => {
+            // Get elements for pre-population (use the puzzle elements in order)
+            const puzzleElements = {{ puzzle.elements | tojson }};
+            
+            // Pre-populate solution zone with elements (showing AI's proposed order)
+            // For LOA 4, we show all elements as the AI's suggested arrangement
+            puzzleElements.forEach(element => {
                 const item = sourceItems.querySelector(`[data-element="${element}"]`);
                 if (item) {
                     solutionZone.appendChild(item);
@@ -598,76 +613,91 @@
                 item.style.cursor = 'not-allowed';
             });
             
-            document.getElementById('accept-loa4-btn').addEventListener('click', () => {
-                logInteraction('accept_ai_solution', { reasoning_viewed: reasoningViewed });
-                acceptedAdvice = true;
-                showSubmitButton();
-                document.querySelectorAll('.loa4-controls button').forEach(btn => btn.disabled = true);
-            });
+            const acceptBtn = document.getElementById('accept-loa4-btn');
+            const viewReasoningBtn = document.getElementById('view-reasoning-btn');
+            const rejectBtn = document.getElementById('reject-loa4-btn');
             
-            document.getElementById('view-reasoning-btn').addEventListener('click', () => {
-                const reasoningDiv = document.getElementById('ai-reasoning-loa4');
-                if (reasoningDiv.style.display === 'none') {
-                    reasoningDiv.style.display = 'block';
-                    reasoningViewed = true;
-                    logInteraction('view_ai_reasoning');
-                    document.getElementById('view-reasoning-btn').textContent = '👁 Hide AI Reasoning';
-                } else {
-                    reasoningDiv.style.display = 'none';
-                    document.getElementById('view-reasoning-btn').textContent = '👁 View AI Reasoning';
-                }
-            });
-            
-            document.getElementById('reject-loa4-btn').addEventListener('click', () => {
-                logInteraction('reject_ai_solution', { reasoning_viewed: reasoningViewed });
-                overridden = true;
-                isModifyingAllowed = true;
-                
-                // Enable drag and drop
-                initializeDragAndDrop();
-                document.querySelectorAll('.drag-item').forEach(item => {
-                    item.style.opacity = '1';
-                    item.style.cursor = 'grab';
+            if (acceptBtn) {
+                acceptBtn.addEventListener('click', () => {
+                    logInteraction('accept_ai_solution', { reasoning_viewed: reasoningViewed });
+                    acceptedAdvice = true;
+                    showSubmitButton();
+                    document.querySelectorAll('.loa4-controls button').forEach(btn => btn.disabled = true);
                 });
-                
-                document.getElementById('accept-loa4-btn').disabled = true;
-                document.getElementById('reject-loa4-btn').disabled = true;
-                
-                // Monitor changes to solution
-                const observer = new MutationObserver(() => {
-                    if (getCurrentSolution().length > 0) {
-                        showSubmitButton();
+            }
+            
+            if (viewReasoningBtn) {
+                viewReasoningBtn.addEventListener('click', () => {
+                    const reasoningDiv = document.getElementById('ai-reasoning-loa4');
+                    if (reasoningDiv && reasoningDiv.style.display === 'none') {
+                        reasoningDiv.style.display = 'block';
+                        reasoningViewed = true;
+                        logInteraction('view_ai_reasoning');
+                        viewReasoningBtn.textContent = '👁 Hide AI Reasoning';
+                    } else if (reasoningDiv) {
+                        reasoningDiv.style.display = 'none';
+                        viewReasoningBtn.textContent = '👁 View AI Reasoning';
                     }
                 });
-                observer.observe(solutionZone, { childList: true });
-            });
+            }
+            
+            if (rejectBtn) {
+                rejectBtn.addEventListener('click', () => {
+                    logInteraction('reject_ai_solution', { reasoning_viewed: reasoningViewed });
+                    overridden = true;
+                    isModifyingAllowed = true;
+                    
+                    // Enable drag and drop
+                    initializeDragAndDrop();
+                    document.querySelectorAll('.drag-item').forEach(item => {
+                        item.style.opacity = '1';
+                        item.style.cursor = 'grab';
+                    });
+                
+                    if (acceptBtn) acceptBtn.disabled = true;
+                    rejectBtn.disabled = true;
+                
+                    // Monitor changes to solution
+                    const observer = new MutationObserver(() => {
+                        if (getCurrentSolution().length > 0) {
+                            showSubmitButton();
+                        }
+                    });
+                    observer.observe(solutionZone, { childList: true });
+                });
+            }
         }
         
         // Submit button handler
-        document.getElementById('submit-btn').addEventListener('click', () => {
-            if (!finalAnswer || finalAnswer.trim().length === 0) {
-                alert('Please provide a solution before continuing.');
-                return;
-            }
-            
-            clearInterval(timerInterval);
-            document.getElementById('questionnaire-modal').style.display = 'flex';
-        });
+        const submitBtn = document.getElementById('submit-btn');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', () => {
+                if (!finalAnswer || finalAnswer.trim().length === 0) {
+                    alert('Please provide a solution before continuing.');
+                    return;
+                }
+                
+                clearInterval(timerInterval);
+                document.getElementById('questionnaire-modal').style.display = 'flex';
+            });
+        }
         
         // Questionnaire submission
-        document.getElementById('submit-questionnaire-btn').addEventListener('click', async () => {
-            const confidence = document.querySelector('input[name="confidence"]:checked');
-            const trust = LOA !== 1 ? document.querySelector('input[name="trust"]:checked') : null;
-            const awareness = LOA !== 1 ? document.querySelector('input[name="awareness"]:checked') : null;
-            
-            if (!confidence || (LOA !== 1 && (!trust || !awareness))) {
-                alert('Please answer all questions before continuing.');
-                return;
-            }
-            
-            const decisionLatency = decisionStartTime ? (Date.now() - decisionStartTime) / 1000 : 0;
-            
-            const submissionData = {
+        const submitQuestionnaireBtn = document.getElementById('submit-questionnaire-btn');
+        if (submitQuestionnaireBtn) {
+            submitQuestionnaireBtn.addEventListener('click', async () => {
+                const confidence = document.querySelector('input[name="confidence"]:checked');
+                const trust = LOA !== 1 ? document.querySelector('input[name="trust"]:checked') : null;
+                const awareness = LOA !== 1 ? document.querySelector('input[name="awareness"]:checked') : null;
+                
+                if (!confidence || (LOA !== 1 && (!trust || !awareness))) {
+                    alert('Please answer all questions before continuing.');
+                    return;
+                }
+                
+                const decisionLatency = decisionStartTime ? (Date.now() - decisionStartTime) / 1000 : 0;
+                
+                const submissionData = {
                 final_answer: finalAnswer,
                 decision_latency: decisionLatency,
                 accepted_advice: acceptedAdvice,
@@ -696,10 +726,8 @@
             } catch (error) {
                 alert('Error submitting data. Please try again.');
             }
-        });
-        
-        // Start timer when page loads
-        startTimer();
+            });
+        }
     </script>
 </body>
 </html>
