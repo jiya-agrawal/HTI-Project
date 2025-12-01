@@ -128,10 +128,29 @@
             </div>
         </div>
         
-        <!-- Post-task Questionnaire Modal -->
+        <!-- Awareness Quiz Modal (shown first after submit) -->
+        <div id="awareness-modal" class="modal">
+            <div class="modal-content awareness-modal-content">
+                <h2>🧠 Awareness Quiz</h2>
+                <p class="info-text">Please answer the following questions about the puzzle you just solved. Answer from memory without looking back at the puzzle.</p>
+                
+                <div class="awareness-questions-container">
+                    {% for question in puzzle.awareness_Q %}
+                    <div class="question awareness-question">
+                        <label>{{ question }}</label>
+                        <textarea name="awareness_q{{ loop.index }}" rows="2" placeholder="Type your answer here..." required></textarea>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <button id="submit-awareness-btn" class="btn btn-primary">Continue to Post-Task Questions →</button>
+            </div>
+        </div>
+        
+        <!-- Post-task Questionnaire Modal (shown after awareness quiz) -->
         <div id="questionnaire-modal" class="modal">
             <div class="modal-content">
-                <h2>Post-Task Questions</h2>
+                <h2>📋 Post-Task Questions</h2>
                 
                 <div class="question">
                     <label>How confident are you in the final answer?</label>
@@ -180,7 +199,7 @@
                 </div>
                 {% endif %}
                 
-                <button id="submit-questionnaire-btn" class="btn btn-primary">Submit & Continue</button>
+                <button id="submit-questionnaire-btn" class="btn btn-primary modal-submit-btn">Submit & Continue</button>
             </div>
         </div>
     </div>
@@ -237,6 +256,7 @@
         let solutionSequence = [];
         let draggedElement = null;
         let isModifyingAllowed = true; // For LOA 3 and 4 initial lock
+        let loa4DecisionMade = false; // For LOA 4 - tracks if accept/reject was pressed
         
         // Get current solution as array
         function getCurrentSolution() {
@@ -259,7 +279,12 @@
                 // Show submit button if solution is complete
                 const totalElements = {{ puzzle.elements|length }};
                 if (solutionSequence.length === totalElements) {
-                    showSubmitButton();
+                    // For LOA 4, only show submit after accept/reject decision is made
+                    if (LOA === 4 && !loa4DecisionMade) {
+                        // Don't show submit yet for LOA 4
+                    } else {
+                        showSubmitButton();
+                    }
                 }
             } else {
                 if (clearBtn) clearBtn.style.display = 'none';
@@ -621,6 +646,7 @@
                 acceptBtn.addEventListener('click', () => {
                     logInteraction('accept_ai_solution', { reasoning_viewed: reasoningViewed });
                     acceptedAdvice = true;
+                    loa4DecisionMade = true;
                     showSubmitButton();
                     document.querySelectorAll('.loa4-controls button').forEach(btn => btn.disabled = true);
                 });
@@ -646,6 +672,7 @@
                     logInteraction('reject_ai_solution', { reasoning_viewed: reasoningViewed });
                     overridden = true;
                     isModifyingAllowed = true;
+                    loa4DecisionMade = true;
                     
                     // Enable drag and drop
                     initializeDragAndDrop();
@@ -668,7 +695,7 @@
             }
         }
         
-        // Submit button handler
+        // Submit button handler - show awareness quiz first
         const submitBtn = document.getElementById('submit-btn');
         if (submitBtn) {
             submitBtn.addEventListener('click', () => {
@@ -678,11 +705,42 @@
                 }
                 
                 clearInterval(timerInterval);
+                document.getElementById('awareness-modal').style.display = 'flex';
+            });
+        }
+        
+        // Store data temporarily
+        let awarenessAnswers = {};
+        
+        // Awareness quiz submission - move to questionnaire
+        const submitAwarenessBtn = document.getElementById('submit-awareness-btn');
+        if (submitAwarenessBtn) {
+            submitAwarenessBtn.addEventListener('click', async () => {
+                // Collect all awareness quiz answers
+                awarenessAnswers = {};
+                const textareas = document.querySelectorAll('.awareness-question textarea');
+                let allAnswered = true;
+                
+                textareas.forEach((textarea, index) => {
+                    const answer = textarea.value.trim();
+                    if (!answer) {
+                        allAnswered = false;
+                    }
+                    awarenessAnswers[`Q${index + 1}`] = answer;
+                });
+                
+                if (!allAnswered) {
+                    alert('Please answer all awareness questions before continuing.');
+                    return;
+                }
+                
+                // Hide awareness modal and show questionnaire
+                document.getElementById('awareness-modal').style.display = 'none';
                 document.getElementById('questionnaire-modal').style.display = 'flex';
             });
         }
         
-        // Questionnaire submission
+        // Questionnaire submission - final submit
         const submitQuestionnaireBtn = document.getElementById('submit-questionnaire-btn');
         if (submitQuestionnaireBtn) {
             submitQuestionnaireBtn.addEventListener('click', async () => {
@@ -698,34 +756,35 @@
                 const decisionLatency = decisionStartTime ? (Date.now() - decisionStartTime) / 1000 : 0;
                 
                 const submissionData = {
-                final_answer: finalAnswer,
-                decision_latency: decisionLatency,
-                accepted_advice: acceptedAdvice,
-                overridden: overridden,
-                confidence_score: parseInt(confidence.value),
-                trust_score: trust ? parseInt(trust.value) : 0,
-                awareness_score: awareness ? parseInt(awareness.value) : 0
-            };
-            
-            try {
-                const response = await fetch('/submit-puzzle', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(submissionData)
-                });
+                    final_answer: finalAnswer,
+                    decision_latency: decisionLatency,
+                    accepted_advice: acceptedAdvice,
+                    overridden: overridden,
+                    confidence_score: parseInt(confidence.value),
+                    trust_score: trust ? parseInt(trust.value) : 0,
+                    awareness_score: awareness ? parseInt(awareness.value) : 0,
+                    awareness_quiz_answers: awarenessAnswers
+                };
                 
-                const data = await response.json();
-                
-                if (data.success) {
-                    if (data.next_step === 'loa_intro') {
-                        window.location.href = '/loa-intro';
-                    } else {
-                        window.location.href = '/final';
+                try {
+                    const response = await fetch('/submit-puzzle', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(submissionData)
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        if (data.next_step === 'loa_intro') {
+                            window.location.href = '/loa-intro';
+                        } else {
+                            window.location.href = '/final';
+                        }
                     }
+                } catch (error) {
+                    alert('Error submitting data. Please try again.');
                 }
-            } catch (error) {
-                alert('Error submitting data. Please try again.');
-            }
             });
         }
     </script>

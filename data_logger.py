@@ -42,6 +42,11 @@ class DataLogger:
             "trust_score",
             "confidence_score",
             "awareness_score",
+            "awareness_quiz_Q1",
+            "awareness_quiz_Q2",
+            "awareness_quiz_Q3",
+            "awareness_quiz_Q4",
+            "awareness_quiz_Q5",
             "final_answer",
             "expected_answer"
         ]
@@ -57,6 +62,9 @@ class DataLogger:
         Args:
             data: Dictionary containing all logged metrics
         """
+        # Extract awareness quiz answers
+        awareness_quiz = data.get("awareness_quiz_answers", {})
+        
         row = [
             data.get("participant_id", ""),
             data.get("loa_level", ""),
@@ -76,6 +84,11 @@ class DataLogger:
             data.get("trust_score", 0),
             data.get("confidence_score", 0),
             data.get("awareness_score", 0),
+            awareness_quiz.get("Q1", ""),
+            awareness_quiz.get("Q2", ""),
+            awareness_quiz.get("Q3", ""),
+            awareness_quiz.get("Q4", ""),
+            awareness_quiz.get("Q5", ""),
             data.get("final_answer", ""),
             data.get("expected_answer", "")
         ]

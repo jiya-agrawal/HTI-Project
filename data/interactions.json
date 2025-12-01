@@ -2951,5 +2951,685 @@
       "element": "Fiction",
       "position": 7
     }
+  },
+  {
+    "participant_id": "P098",
+    "puzzle_id": 106,
+    "interaction_type": "accept_ai_solution",
+    "timestamp": "2025-12-01T21:35:28.493452",
+    "details": {
+      "reasoning_viewed": false
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 112,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:41:54.978114",
+    "details": {
+      "element": "Art"
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 112,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:41:55.248066",
+    "details": {
+      "element": "Art",
+      "position": 1
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 112,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:41:55.986069",
+    "details": {
+      "element": "Biology"
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 112,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:41:56.586538",
+    "details": {
+      "element": "Biology",
+      "position": 2
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 112,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:41:57.235175",
+    "details": {
+      "element": "Drama"
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 112,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:41:57.856133",
+    "details": {
+      "element": "Drama",
+      "position": 3
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 112,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:41:58.483649",
+    "details": {
+      "element": "Economics"
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 112,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:41:59.105211",
+    "details": {
+      "element": "Economics",
+      "position": 4
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 112,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:41:59.774745",
+    "details": {
+      "element": "Chemistry"
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 112,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:42:00.600976",
+    "details": {
+      "element": "Chemistry",
+      "position": 5
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 112,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:42:01.282737",
+    "details": {
+      "element": "Geography"
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 112,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:42:02.153646",
+    "details": {
+      "element": "Geography",
+      "position": 6
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 112,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:42:02.777044",
+    "details": {
+      "element": "Fiction"
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 112,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:42:03.467079",
+    "details": {
+      "element": "Fiction",
+      "position": 7
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 107,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:43:05.684531",
+    "details": {
+      "element": "Noah"
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 107,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:43:06.641160",
+    "details": {
+      "element": "Liam"
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 107,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:43:07.415452",
+    "details": {
+      "element": "Liam",
+      "position": 1
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 107,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:43:08.127452",
+    "details": {
+      "element": "Priya"
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 107,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:43:08.718012",
+    "details": {
+      "element": "Priya",
+      "position": 2
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 107,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:43:09.371432",
+    "details": {
+      "element": "Rohan"
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 107,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:43:10.086518",
+    "details": {
+      "element": "Rohan",
+      "position": 3
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 107,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:43:10.685175",
+    "details": {
+      "element": "Noah"
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 107,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:43:11.325621",
+    "details": {
+      "element": "Noah",
+      "position": 4
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 107,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:43:12.186670",
+    "details": {
+      "element": "Sara"
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 107,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:43:12.863030",
+    "details": {
+      "element": "Sara",
+      "position": 5
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 105,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:43:34.932231",
+    "details": {
+      "element": "Gargi"
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 105,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:43:35.185384",
+    "details": {
+      "element": "Gargi",
+      "position": 1
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 105,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:43:36.181315",
+    "details": {
+      "element": "Isha"
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 105,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:43:36.766544",
+    "details": {
+      "element": "Isha",
+      "position": 2
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 105,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:43:37.260668",
+    "details": {
+      "element": "Kunal"
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 105,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:43:37.884784",
+    "details": {
+      "element": "Kunal",
+      "position": 3
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 105,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:43:38.383962",
+    "details": {
+      "element": "Jatin"
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 105,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:43:38.953322",
+    "details": {
+      "element": "Jatin",
+      "position": 4
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 105,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:43:39.645372",
+    "details": {
+      "element": "Harsh"
+    }
+  },
+  {
+    "participant_id": "P0987",
+    "puzzle_id": 105,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:43:40.447002",
+    "details": {
+      "element": "Harsh",
+      "position": 5
+    }
+  },
+  {
+    "participant_id": "P098765",
+    "puzzle_id": 106,
+    "interaction_type": "reject_ai_solution",
+    "timestamp": "2025-12-01T21:57:55.520127",
+    "details": {
+      "reasoning_viewed": false
+    }
+  },
+  {
+    "participant_id": "P098765",
+    "puzzle_id": 106,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:58:00.761978",
+    "details": {
+      "element": "Finance"
+    }
+  },
+  {
+    "participant_id": "P098765",
+    "puzzle_id": 106,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:58:02.086248",
+    "details": {
+      "element": "Finance",
+      "position": 1
+    }
+  },
+  {
+    "participant_id": "P098765",
+    "puzzle_id": 106,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:58:02.561931",
+    "details": {
+      "element": "HR"
+    }
+  },
+  {
+    "participant_id": "P098765",
+    "puzzle_id": 106,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:58:03.368462",
+    "details": {
+      "element": "HR",
+      "position": 4
+    }
+  },
+  {
+    "participant_id": "P098765",
+    "puzzle_id": 106,
+    "interaction_type": "view_ai_reasoning",
+    "timestamp": "2025-12-01T21:58:10.485640",
+    "details": {}
+  },
+  {
+    "participant_id": "P098765",
+    "puzzle_id": 106,
+    "interaction_type": "accept_ai_solution",
+    "timestamp": "2025-12-01T21:58:15.379632",
+    "details": {
+      "reasoning_viewed": true
+    }
+  },
+  {
+    "participant_id": "P098765",
+    "puzzle_id": 105,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:58:39.869989",
+    "details": {
+      "element": "Gargi"
+    }
+  },
+  {
+    "participant_id": "P098765",
+    "puzzle_id": 105,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:58:40.483884",
+    "details": {
+      "element": "Gargi",
+      "position": 1
+    }
+  },
+  {
+    "participant_id": "P098765",
+    "puzzle_id": 105,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:58:41.199512",
+    "details": {
+      "element": "Isha"
+    }
+  },
+  {
+    "participant_id": "P098765",
+    "puzzle_id": 105,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:58:41.751579",
+    "details": {
+      "element": "Isha",
+      "position": 2
+    }
+  },
+  {
+    "participant_id": "P098765",
+    "puzzle_id": 105,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:58:43.960828",
+    "details": {
+      "element": "Harsh"
+    }
+  },
+  {
+    "participant_id": "P098765",
+    "puzzle_id": 105,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:58:44.569543",
+    "details": {
+      "element": "Harsh",
+      "position": 3
+    }
+  },
+  {
+    "participant_id": "P098765",
+    "puzzle_id": 105,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:58:45.233709",
+    "details": {
+      "element": "Kunal"
+    }
+  },
+  {
+    "participant_id": "P098765",
+    "puzzle_id": 105,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:58:47.358582",
+    "details": {
+      "element": "Kunal"
+    }
+  },
+  {
+    "participant_id": "P098765",
+    "puzzle_id": 105,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:58:47.617782",
+    "details": {
+      "element": "Kunal",
+      "position": 4
+    }
+  },
+  {
+    "participant_id": "P098765",
+    "puzzle_id": 105,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T21:58:48.296570",
+    "details": {
+      "element": "Jatin"
+    }
+  },
+  {
+    "participant_id": "P098765",
+    "puzzle_id": 105,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T21:58:48.935506",
+    "details": {
+      "element": "Jatin",
+      "position": 5
+    }
+  },
+  {
+    "participant_id": "P09878",
+    "puzzle_id": 108,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T22:03:32.151242",
+    "details": {
+      "element": "Arjun"
+    }
+  },
+  {
+    "participant_id": "P09878",
+    "puzzle_id": 108,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T22:03:32.879581",
+    "details": {
+      "element": "Arjun",
+      "position": 1
+    }
+  },
+  {
+    "participant_id": "P09878",
+    "puzzle_id": 108,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T22:03:34.325414",
+    "details": {
+      "element": "Beena"
+    }
+  },
+  {
+    "participant_id": "P09878",
+    "puzzle_id": 108,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T22:03:34.596701",
+    "details": {
+      "element": "Beena",
+      "position": 2
+    }
+  },
+  {
+    "participant_id": "P09878",
+    "puzzle_id": 108,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T22:03:35.325290",
+    "details": {
+      "element": "Diya"
+    }
+  },
+  {
+    "participant_id": "P09878",
+    "puzzle_id": 108,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T22:03:36.140499",
+    "details": {
+      "element": "Diya",
+      "position": 3
+    }
+  },
+  {
+    "participant_id": "P09878",
+    "puzzle_id": 108,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T22:03:36.832366",
+    "details": {
+      "element": "Cyrus"
+    }
+  },
+  {
+    "participant_id": "P09878",
+    "puzzle_id": 108,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T22:03:37.545675",
+    "details": {
+      "element": "Cyrus",
+      "position": 4
+    }
+  },
+  {
+    "participant_id": "P09878",
+    "puzzle_id": 108,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T22:03:38.213171",
+    "details": {
+      "element": "Farah"
+    }
+  },
+  {
+    "participant_id": "P09878",
+    "puzzle_id": 108,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T22:03:38.853636",
+    "details": {
+      "element": "Farah",
+      "position": 5
+    }
+  },
+  {
+    "participant_id": "P09878",
+    "puzzle_id": 108,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T22:03:39.676503",
+    "details": {
+      "element": "Gopal"
+    }
+  },
+  {
+    "participant_id": "P09878",
+    "puzzle_id": 108,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T22:03:40.340973",
+    "details": {
+      "element": "Gopal",
+      "position": 6
+    }
+  },
+  {
+    "participant_id": "P09878",
+    "puzzle_id": 108,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T22:03:40.963489",
+    "details": {
+      "element": "Hina"
+    }
+  },
+  {
+    "participant_id": "P09878",
+    "puzzle_id": 108,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T22:03:41.624152",
+    "details": {
+      "element": "Hina",
+      "position": 7
+    }
+  },
+  {
+    "participant_id": "P09878",
+    "puzzle_id": 108,
+    "interaction_type": "drag_start",
+    "timestamp": "2025-12-01T22:03:42.250814",
+    "details": {
+      "element": "Eshan"
+    }
+  },
+  {
+    "participant_id": "P09878",
+    "puzzle_id": 108,
+    "interaction_type": "drop_in_solution",
+    "timestamp": "2025-12-01T22:03:43.056102",
+    "details": {
+      "element": "Eshan",
+      "position": 8
+    }
+  },
+  {
+    "participant_id": "P09876",
+    "puzzle_id": 112,
+    "interaction_type": "request_hint",
+    "timestamp": "2025-12-01T22:05:31.838976",
+    "details": {
+      "hint_number": 1,
+      "hint_text": "Fix Chemistry in the 4th position and Drama in the 1st position first."
+    }
+  },
+  {
+    "participant_id": "P09876",
+    "puzzle_id": 112,
+    "interaction_type": "request_hint",
+    "timestamp": "2025-12-01T22:05:41.260972",
+    "details": {
+      "hint_number": 2,
+      "hint_text": "Use the fact that Geography is exactly 3 positions to the right of Drama to determine Geography\u2019s position."
+    }
   }
 ]

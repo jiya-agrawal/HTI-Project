@@ -705,6 +705,13 @@ def puzzle():
     ai_solution = puzzle['ai_solution_faulty'] if use_faulty else puzzle['ai_solution_correct']
     ai_reasoning = puzzle['ai_reasoning_faulty'] if use_faulty else puzzle['ai_reasoning_correct']
     
+    # Select hints based on faulty condition (for LOA 2)
+    hints = puzzle.get('hints_faulty', []) if use_faulty else puzzle.get('hints_correct', [])
+    
+    # Create a modified puzzle dict with the appropriate hints
+    puzzle_with_hints = dict(puzzle)
+    puzzle_with_hints['hints'] = hints
+    
     # Store puzzle start data
     puzzle_key = f"puzzle_{current_step}"
     session['puzzle_data'][puzzle_key] = {
@@ -720,7 +727,7 @@ def puzzle():
         'puzzle.html',
         loa=current_loa,
         step=current_step + 1,
-        puzzle=puzzle,
+        puzzle=puzzle_with_hints,
         ai_solution=ai_solution,
         ai_reasoning=ai_reasoning,
         gemini_configured=GEMINI_CONFIGURED
@@ -852,6 +859,9 @@ def submit_puzzle():
     # Count hints used for LOA 2
     hints_used = sum(1 for i in puzzle_info['interactions'] if i['type'] == 'request_hint')
     
+    # Get awareness quiz answers
+    awareness_quiz_answers = data.get('awareness_quiz_answers', {})
+    
     # Log to CSV
     log_data = {
         "participant_id": session['participant_id'],
@@ -872,6 +882,7 @@ def submit_puzzle():
         "trust_score": trust_score,
         "confidence_score": confidence_score,
         "awareness_score": awareness_score,
+        "awareness_quiz_answers": awareness_quiz_answers,
         "final_answer": final_answer,
         "expected_answer": puzzle['correct_solution']
     }
