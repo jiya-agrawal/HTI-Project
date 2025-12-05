@@ -1,83 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTI Experiment - LOA Introduction</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
     <div class="container">
         <div class="progress-bar">
             <div class="progress-fill" style="width: {{ (step / 4) * 100 }}%"></div>
         </div>
-        
+
         <div class="progress-indicator">
             <span>Puzzle {{ step }} of 4</span>
         </div>
-        
+
         <div class="loa-intro-card">
             <h1>{{ loa_info.title }}</h1>
-            
+
             <div class="loa-description">
                 <p class="description-text">{{ loa_info.description }}</p>
             </div>
-            
+
             <div class="loa-instructions">
                 <h3>📋 Instructions:</h3>
                 <p>{{ loa_info.instructions }}</p>
             </div>
-            
+
             <!-- {% if loa_info.disclaimer %}
             <div class="ai-disclaimer">
                 {{ loa_info.disclaimer }}
             </div>
             {% endif %} -->
-            
+
             <div class="loa-details">
                 <div class="detail-section">
                     <h3>👤 Your Role:</h3>
                     {% if loa_info.your_role %}
                     <ul class="role-list">
                         {% for item in loa_info.your_role %}
-                            {% if item is mapping %}
-                                <li>{{ item.text | safe }}
-                                    {% if item.sub_items %}
-                                    <ul class="sub-role-list">
-                                        {% for sub_item in item.sub_items %}
-                                        <li>{{ sub_item | safe }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                    {% endif %}
-                                </li>
-                            {% else %}
-                                <li>{{ item | safe }}</li>
+                        {% if item is mapping %}
+                        <li>{{ item.text | safe }}
+                            {% if item.sub_items %}
+                            <ul class="sub-role-list">
+                                {% for sub_item in item.sub_items %}
+                                <li>{{ sub_item | safe }}</li>
+                                {% endfor %}
+                            </ul>
                             {% endif %}
+                        </li>
+                        {% else %}
+                        <li>{{ item | safe }}</li>
+                        {% endif %}
                         {% endfor %}
                     </ul>
                     {% else %}
                     <p><em>You will solve this puzzle entirely on your own with no AI involvement.</em></p>
                     {% endif %}
                 </div>
-                
+
                 <div class="detail-section">
                     <h3>🤖 AI Role:</h3>
                     {% if loa_info.ai_role %}
                     <ul class="role-list">
                         {% for item in loa_info.ai_role %}
-                            {% if item is mapping %}
-                                <li>{{ item.text | safe }}
-                                    {% if item.sub_items %}
-                                    <ul class="sub-role-list">
-                                        {% for sub_item in item.sub_items %}
-                                        <li>{{ sub_item | safe }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                    {% endif %}
-                                </li>
-                            {% else %}
-                                <li>{{ item | safe }}</li>
+                        {% if item is mapping %}
+                        <li>{{ item.text | safe }}
+                            {% if item.sub_items %}
+                            <ul class="sub-role-list">
+                                {% for sub_item in item.sub_items %}
+                                <li>{{ sub_item | safe }}</li>
+                                {% endfor %}
+                            </ul>
                             {% endif %}
+                        </li>
+                        {% else %}
+                        <li>{{ item | safe }}</li>
+                        {% endif %}
                         {% endfor %}
                     </ul>
                     {% else %}
@@ -85,7 +87,7 @@
                     {% endif %}
                 </div>
             </div>
-            
+
             <div class="button-container">
                 <button id="begin-puzzle-btn" class="btn btn-primary">Begin Puzzle</button>
             </div>
@@ -98,14 +100,15 @@
 
         </div>
     </div>
-    
+
     <!-- Pre-Task Trust Survey Modal (for LOA 2, 3, 4 only) -->
     {% if loa != 1 %}
     <div id="pre-trust-survey-modal" class="modal">
         <div class="modal-content trust-survey-content">
             <h2>📊 Trust Survey (Pre-Task)</h2>
-            <p class="info-text">Before starting this puzzle, please rate your agreement with the following statements about AI in general.</p>
-            
+            <p class="info-text">Before starting this puzzle, please rate your agreement with the following statements
+                about AI in general.</p>
+
             <div class="trust-questions-container">
                 <div class="trust-question">
                     <label>1. The AI is capable of interpreting situations correctly.</label>
@@ -126,7 +129,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="trust-question">
                     <label>2. The AI works reliably.</label>
                     <div class="likert-scale-5">
@@ -146,9 +149,9 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="trust-question">
-                    <label>3. I was able to understand why things happened.</label>
+                    <label>3. I feel I can understand what an AI is doing when it responds.</label>
                     <div class="likert-scale-5">
                         <div class="likert-labels">
                             <span>Strongly disagree</span>
@@ -166,7 +169,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="trust-question">
                     <label>4. The AI might make sporadic errors.</label>
                     <div class="likert-scale-5">
@@ -186,7 +189,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="trust-question">
                     <label>5. I am confident about the AI's capabilities.</label>
                     <div class="likert-scale-5">
@@ -207,15 +210,15 @@
                     </div>
                 </div>
             </div>
-            
+
             <button id="submit-pre-trust-btn" class="btn btn-primary modal-submit-btn">Continue to Puzzle →</button>
         </div>
     </div>
     {% endif %}
-    
+
     <script>
         const LOA = {{ loa }};
-        
+
         document.getElementById('begin-puzzle-btn').addEventListener('click', () => {
             {% if loa != 1 %}
             // Show pre-task trust survey for LOA 2, 3, 4
@@ -225,7 +228,7 @@
             window.location.href = '/puzzle';
             {% endif %}
         });
-        
+
         {% if loa != 1 %}
         document.getElementById('submit-pre-trust-btn').addEventListener('click', async () => {
             // Validate all questions are answered
@@ -234,12 +237,12 @@
             const q3 = document.querySelector('input[name="pre_trust_q3"]:checked');
             const q4 = document.querySelector('input[name="pre_trust_q4"]:checked');
             const q5 = document.querySelector('input[name="pre_trust_q5"]:checked');
-            
+
             if (!q1 || !q2 || !q3 || !q4 || !q5) {
                 alert('Please answer all trust survey questions before continuing.');
                 return;
             }
-            
+
             // Collect pre-task trust survey answers
             const preTrustAnswers = {
                 Q1: parseInt(q1.value),
@@ -248,7 +251,7 @@
                 Q4: parseInt(q4.value),
                 Q5: parseInt(q5.value)
             };
-            
+
             try {
                 // Submit pre-task trust survey
                 const response = await fetch('/submit-pre-trust-survey', {
@@ -256,9 +259,9 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ pre_trust_survey: preTrustAnswers })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     window.location.href = '/puzzle';
                 } else {
@@ -271,4 +274,5 @@
         {% endif %}
     </script>
 </body>
+
 </html>
