@@ -143,11 +143,12 @@
                     {% endfor %}
                 </div>
                 
-                <button id="submit-awareness-btn" class="btn btn-primary">Continue to Trust Survey →</button>
+                <button id="submit-awareness-btn" class="btn btn-primary">{% if loa == 1 %}Submit & Continue →{% else %}Continue to Trust Survey →{% endif %}</button>
             </div>
         </div>
         
-        <!-- Post-Task Trust Survey Modal (shown after awareness quiz) -->
+        <!-- Post-Task Trust Survey Modal (shown after awareness quiz, LOA 2, 3, 4 only) -->
+        {% if loa != 1 %}
         <div id="trust-survey-modal" class="modal">
             <div class="modal-content trust-survey-content">
                 <h2>📊 Trust Survey (Post-Task)</h2>
@@ -258,6 +259,7 @@
                 <button id="submit-trust-survey-btn" class="btn btn-primary modal-submit-btn">Submit & Continue</button>
             </div>
         </div>
+        {% endif %}
     </div>
     
     <script>
@@ -790,9 +792,43 @@
                     return;
                 }
                 
-                // Hide awareness modal and show trust survey
-                document.getElementById('awareness-modal').style.display = 'none';
-                document.getElementById('trust-survey-modal').style.display = 'flex';
+                // For LOA 1, skip trust survey and submit directly
+                if (LOA === 1) {
+                    const decisionLatency = decisionStartTime ? (Date.now() - decisionStartTime) / 1000 : 0;
+                    
+                    const submissionData = {
+                        final_answer: finalAnswer,
+                        decision_latency: decisionLatency,
+                        accepted_advice: acceptedAdvice,
+                        overridden: overridden,
+                        awareness_quiz_answers: awarenessAnswers,
+                        post_trust_survey: {}  // Empty for LOA 1
+                    };
+                    
+                    try {
+                        const response = await fetch('/submit-puzzle', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(submissionData)
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            if (data.next_step === 'loa_intro') {
+                                window.location.href = '/loa-intro';
+                            } else {
+                                window.location.href = '/final';
+                            }
+                        }
+                    } catch (error) {
+                        alert('Error submitting data. Please try again.');
+                    }
+                } else {
+                    // Hide awareness modal and show trust survey for LOA 2, 3, 4
+                    document.getElementById('awareness-modal').style.display = 'none';
+                    document.getElementById('trust-survey-modal').style.display = 'flex';
+                }
             });
         }
         
