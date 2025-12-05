@@ -884,6 +884,9 @@ def submit_puzzle():
     # Get post-trust survey
     post_trust_survey = data.get('post_trust_survey', {})
     
+    # Get productivity survey
+    productivity_survey = data.get('productivity_survey', {})
+    
     # Log to CSV
     log_data = {
         "participant_id": session['participant_id'],
@@ -904,6 +907,7 @@ def submit_puzzle():
         "pre_trust_survey": pre_trust_survey,
         "post_trust_survey": post_trust_survey,
         "awareness_quiz_answers": awareness_quiz_answers,
+        "productivity_survey": productivity_survey,
         "final_answer": final_answer,
         "expected_answer": puzzle['correct_solution']
     }

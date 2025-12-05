@@ -54,6 +54,10 @@ class DataLogger:
             "awareness_quiz_Q3",
             "awareness_quiz_Q4",
             "awareness_quiz_Q5",
+            "productivity_Q1",
+            "productivity_Q2",
+            "productivity_Q3",
+            "productivity_Q4",
             "final_answer",
             "expected_answer"
         ]
@@ -75,6 +79,9 @@ class DataLogger:
         # Extract pre and post trust survey answers
         pre_trust = data.get("pre_trust_survey", {})
         post_trust = data.get("post_trust_survey", {})
+        
+        # Extract productivity survey answers
+        productivity = data.get("productivity_survey", {})
         
         row = [
             data.get("participant_id", ""),
@@ -107,6 +114,10 @@ class DataLogger:
             awareness_quiz.get("Q3", ""),
             awareness_quiz.get("Q4", ""),
             awareness_quiz.get("Q5", ""),
+            productivity.get("Q1", ""),
+            productivity.get("Q2", ""),
+            productivity.get("Q3", ""),
+            productivity.get("Q4", ""),
             data.get("final_answer", ""),
             data.get("expected_answer", "")
         ]

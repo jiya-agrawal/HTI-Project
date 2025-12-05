@@ -143,7 +143,7 @@
                     {% endfor %}
                 </div>
                 
-                <button id="submit-awareness-btn" class="btn btn-primary">{% if loa == 1 %}Submit & Continue →{% else %}Continue to Trust Survey →{% endif %}</button>
+                <button id="submit-awareness-btn" class="btn btn-primary">{% if loa == 1 %}Continue to Productivity Survey →{% else %}Continue to Trust Survey →{% endif %}</button>
             </div>
         </div>
         
@@ -256,10 +256,102 @@
                     </div>
                 </div>
                 
-                <button id="submit-trust-survey-btn" class="btn btn-primary modal-submit-btn">Submit & Continue</button>
+                <button id="submit-trust-survey-btn" class="btn btn-primary modal-submit-btn">Continue to Productivity Survey →</button>
             </div>
         </div>
         {% endif %}
+        
+        <!-- Productivity Survey Modal (shown after trust survey for LOA 2,3,4 or after awareness for LOA 1) -->
+        <div id="productivity-survey-modal" class="modal">
+            <div class="modal-content trust-survey-content">
+                <h2>📊 Productivity Survey</h2>
+                <p class="info-text">Please rate your agreement with the following statements about your experience with this task.</p>
+                
+                <div class="trust-questions-container">
+                    <div class="trust-question">
+                        <label>1. How mentally demanding was the task?</label>
+                        <div class="likert-scale-5">
+                            <div class="likert-labels">
+                                <span>Very low</span>
+                                <span>Low</span>
+                                <span>Moderate</span>
+                                <span>High</span>
+                                <span>Very high</span>
+                            </div>
+                            <div class="likert-options">
+                                <label><input type="radio" name="productivity_q1" value="1" required><span>(1)</span></label>
+                                <label><input type="radio" name="productivity_q1" value="2"><span>(2)</span></label>
+                                <label><input type="radio" name="productivity_q1" value="3"><span>(3)</span></label>
+                                <label><input type="radio" name="productivity_q1" value="4"><span>(4)</span></label>
+                                <label><input type="radio" name="productivity_q1" value="5"><span>(5)</span></label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="trust-question">
+                        <label>2. How hard did you have to work to accomplish your level of performance on this task?</label>
+                        <div class="likert-scale-5">
+                            <div class="likert-labels">
+                                <span>Very low</span>
+                                <span>Low</span>
+                                <span>Moderate</span>
+                                <span>High</span>
+                                <span>Very high</span>
+                            </div>
+                            <div class="likert-options">
+                                <label><input type="radio" name="productivity_q2" value="1" required><span>(1)</span></label>
+                                <label><input type="radio" name="productivity_q2" value="2"><span>(2)</span></label>
+                                <label><input type="radio" name="productivity_q2" value="3"><span>(3)</span></label>
+                                <label><input type="radio" name="productivity_q2" value="4"><span>(4)</span></label>
+                                <label><input type="radio" name="productivity_q2" value="5"><span>(5)</span></label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="trust-question">
+                        <label>3. Using this system made me more productive on this task.</label>
+                        <div class="likert-scale-5">
+                            <div class="likert-labels">
+                                <span>Strongly disagree</span>
+                                <span>Rather disagree</span>
+                                <span>Neither disagree nor agree</span>
+                                <span>Rather agree</span>
+                                <span>Strongly agree</span>
+                            </div>
+                            <div class="likert-options">
+                                <label><input type="radio" name="productivity_q3" value="1" required><span>(1)</span></label>
+                                <label><input type="radio" name="productivity_q3" value="2"><span>(2)</span></label>
+                                <label><input type="radio" name="productivity_q3" value="3"><span>(3)</span></label>
+                                <label><input type="radio" name="productivity_q3" value="4"><span>(4)</span></label>
+                                <label><input type="radio" name="productivity_q3" value="5"><span>(5)</span></label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="trust-question">
+                        <label>4. The quality of the work I produced in this task was high.</label>
+                        <div class="likert-scale-5">
+                            <div class="likert-labels">
+                                <span>Strongly disagree</span>
+                                <span>Rather disagree</span>
+                                <span>Neither disagree nor agree</span>
+                                <span>Rather agree</span>
+                                <span>Strongly agree</span>
+                            </div>
+                            <div class="likert-options">
+                                <label><input type="radio" name="productivity_q4" value="1" required><span>(1)</span></label>
+                                <label><input type="radio" name="productivity_q4" value="2"><span>(2)</span></label>
+                                <label><input type="radio" name="productivity_q4" value="3"><span>(3)</span></label>
+                                <label><input type="radio" name="productivity_q4" value="4"><span>(4)</span></label>
+                                <label><input type="radio" name="productivity_q4" value="5"><span>(5)</span></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="submit-productivity-survey-btn" class="btn btn-primary modal-submit-btn">Submit & Continue</button>
+            </div>
+        </div>
     </div>
     
     <script>
@@ -792,38 +884,10 @@
                     return;
                 }
                 
-                // For LOA 1, skip trust survey and submit directly
+                // For LOA 1, skip trust survey and go directly to productivity survey
                 if (LOA === 1) {
-                    const decisionLatency = decisionStartTime ? (Date.now() - decisionStartTime) / 1000 : 0;
-                    
-                    const submissionData = {
-                        final_answer: finalAnswer,
-                        decision_latency: decisionLatency,
-                        accepted_advice: acceptedAdvice,
-                        overridden: overridden,
-                        awareness_quiz_answers: awarenessAnswers,
-                        post_trust_survey: {}  // Empty for LOA 1
-                    };
-                    
-                    try {
-                        const response = await fetch('/submit-puzzle', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(submissionData)
-                        });
-                        
-                        const data = await response.json();
-                        
-                        if (data.success) {
-                            if (data.next_step === 'loa_intro') {
-                                window.location.href = '/loa-intro';
-                            } else {
-                                window.location.href = '/final';
-                            }
-                        }
-                    } catch (error) {
-                        alert('Error submitting data. Please try again.');
-                    }
+                    document.getElementById('awareness-modal').style.display = 'none';
+                    document.getElementById('productivity-survey-modal').style.display = 'flex';
                 } else {
                     // Hide awareness modal and show trust survey for LOA 2, 3, 4
                     document.getElementById('awareness-modal').style.display = 'none';
@@ -850,13 +914,47 @@
                 
                 const decisionLatency = decisionStartTime ? (Date.now() - decisionStartTime) / 1000 : 0;
                 
-                // Collect post-task trust survey answers
-                const postTrustAnswers = {
+                // Store post-task trust survey answers temporarily
+                postTrustAnswers = {
                     Q1: parseInt(postTrustQ1.value),
                     Q2: parseInt(postTrustQ2.value),
                     Q3: parseInt(postTrustQ3.value),
                     Q4: parseInt(postTrustQ4.value),
                     Q5: parseInt(postTrustQ5.value)
+                };
+                
+                // Hide trust survey and show productivity survey
+                document.getElementById('trust-survey-modal').style.display = 'none';
+                document.getElementById('productivity-survey-modal').style.display = 'flex';
+            });
+        }
+        
+        // Store post trust answers temporarily
+        let postTrustAnswers = {};
+        
+        // Productivity Survey submission - final submit for all LOAs
+        const submitProductivityBtn = document.getElementById('submit-productivity-survey-btn');
+        if (submitProductivityBtn) {
+            submitProductivityBtn.addEventListener('click', async () => {
+                // Validate all productivity questions are answered
+                const prodQ1 = document.querySelector('input[name="productivity_q1"]:checked');
+                const prodQ2 = document.querySelector('input[name="productivity_q2"]:checked');
+                const prodQ3 = document.querySelector('input[name="productivity_q3"]:checked');
+                const prodQ4 = document.querySelector('input[name="productivity_q4"]:checked');
+                
+                if (!prodQ1 || !prodQ2 || !prodQ3 || !prodQ4) {
+                    alert('Please answer all productivity survey questions before continuing.');
+                    return;
+                }
+                
+                const decisionLatency = decisionStartTime ? (Date.now() - decisionStartTime) / 1000 : 0;
+                
+                // Collect productivity survey answers
+                const productivityAnswers = {
+                    Q1: parseInt(prodQ1.value),
+                    Q2: parseInt(prodQ2.value),
+                    Q3: parseInt(prodQ3.value),
+                    Q4: parseInt(prodQ4.value)
                 };
                 
                 const submissionData = {
@@ -865,7 +963,8 @@
                     accepted_advice: acceptedAdvice,
                     overridden: overridden,
                     awareness_quiz_answers: awarenessAnswers,
-                    post_trust_survey: postTrustAnswers
+                    post_trust_survey: postTrustAnswers,  // Empty for LOA 1
+                    productivity_survey: productivityAnswers
                 };
                 
                 try {
