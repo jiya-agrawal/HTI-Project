@@ -676,6 +676,27 @@ def loa_intro():
                           step=current_step + 1)
 
 
+@app.route('/submit-pre-trust-survey', methods=['POST'])
+def submit_pre_trust_survey():
+    """Store pre-task trust survey responses before puzzle starts."""
+    data = request.json
+    
+    if 'participant_id' not in session:
+        return jsonify({"error": "No active session"}), 400
+    
+    current_step = session.get('current_step', 0)
+    puzzle_key = f"puzzle_{current_step}"
+    
+    # Store pre-trust survey in session for later logging with puzzle completion
+    if 'pre_trust_surveys' not in session:
+        session['pre_trust_surveys'] = {}
+    
+    session['pre_trust_surveys'][puzzle_key] = data.get('pre_trust_survey', {})
+    session.modified = True
+    
+    return jsonify({"success": True})
+
+
 @app.route('/puzzle')
 def puzzle():
     """Main puzzle interface."""
@@ -848,11 +869,6 @@ def submit_puzzle():
     # Check correctness
     final_correctness = logger.check_correctness(final_answer, puzzle['correct_solution'])
     
-    # Get questionnaire responses
-    trust_score = data.get('trust_score', 0)
-    confidence_score = data.get('confidence_score', 0)
-    awareness_score = data.get('awareness_score', 0)
-    
     # Build action sequence from interactions
     action_sequence = [i['type'] for i in puzzle_info['interactions']]
     
@@ -861,6 +877,12 @@ def submit_puzzle():
     
     # Get awareness quiz answers
     awareness_quiz_answers = data.get('awareness_quiz_answers', {})
+    
+    # Get pre-trust survey (stored earlier from loa-intro)
+    pre_trust_survey = session.get('pre_trust_surveys', {}).get(puzzle_key, {})
+    
+    # Get post-trust survey
+    post_trust_survey = data.get('post_trust_survey', {})
     
     # Log to CSV
     log_data = {
@@ -879,9 +901,8 @@ def submit_puzzle():
         "hints_used": hints_used,
         "edit_distance": edit_distance,
         "final_correctness": final_correctness,
-        "trust_score": trust_score,
-        "confidence_score": confidence_score,
-        "awareness_score": awareness_score,
+        "pre_trust_survey": pre_trust_survey,
+        "post_trust_survey": post_trust_survey,
         "awareness_quiz_answers": awareness_quiz_answers,
         "final_answer": final_answer,
         "expected_answer": puzzle['correct_solution']

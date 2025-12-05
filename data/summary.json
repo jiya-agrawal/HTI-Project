@@ -1,14 +1,14 @@
 {
-  "total_participants": 1,
-  "total_puzzles_completed": 4,
-  "average_completion_time": 52.389061,
-  "average_trust_score": 3.5,
+  "total_participants": 2,
+  "total_puzzles_completed": 5,
+  "average_completion_time": 43.523039,
+  "average_trust_score": 0.0,
   "loa_breakdown": {
     "1": 1,
     "2": 1,
     "3": 1,
-    "4": 1
+    "4": 2
   },
   "correctness_rate": 0.0,
-  "generated_at": "2025-12-01T21:57:35.036659"
+  "generated_at": "2025-12-05T16:38:55.127944"
 }

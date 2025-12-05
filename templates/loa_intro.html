@@ -99,10 +99,176 @@
         </div>
     </div>
     
+    <!-- Pre-Task Trust Survey Modal (for LOA 2, 3, 4 only) -->
+    {% if loa != 1 %}
+    <div id="pre-trust-survey-modal" class="modal">
+        <div class="modal-content trust-survey-content">
+            <h2>📊 Trust Survey (Pre-Task)</h2>
+            <p class="info-text">Before starting this puzzle, please rate your agreement with the following statements about AI in general.</p>
+            
+            <div class="trust-questions-container">
+                <div class="trust-question">
+                    <label>1. The AI is capable of interpreting situations correctly.</label>
+                    <div class="likert-scale-5">
+                        <div class="likert-labels">
+                            <span>Strongly disagree</span>
+                            <span>Rather disagree</span>
+                            <span>Neither disagree nor agree</span>
+                            <span>Rather agree</span>
+                            <span>Strongly agree</span>
+                        </div>
+                        <div class="likert-options">
+                            <label><input type="radio" name="pre_trust_q1" value="1" required><span>(1)</span></label>
+                            <label><input type="radio" name="pre_trust_q1" value="2"><span>(2)</span></label>
+                            <label><input type="radio" name="pre_trust_q1" value="3"><span>(3)</span></label>
+                            <label><input type="radio" name="pre_trust_q1" value="4"><span>(4)</span></label>
+                            <label><input type="radio" name="pre_trust_q1" value="5"><span>(5)</span></label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="trust-question">
+                    <label>2. The AI works reliably.</label>
+                    <div class="likert-scale-5">
+                        <div class="likert-labels">
+                            <span>Strongly disagree</span>
+                            <span>Rather disagree</span>
+                            <span>Neither disagree nor agree</span>
+                            <span>Rather agree</span>
+                            <span>Strongly agree</span>
+                        </div>
+                        <div class="likert-options">
+                            <label><input type="radio" name="pre_trust_q2" value="1" required><span>(1)</span></label>
+                            <label><input type="radio" name="pre_trust_q2" value="2"><span>(2)</span></label>
+                            <label><input type="radio" name="pre_trust_q2" value="3"><span>(3)</span></label>
+                            <label><input type="radio" name="pre_trust_q2" value="4"><span>(4)</span></label>
+                            <label><input type="radio" name="pre_trust_q2" value="5"><span>(5)</span></label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="trust-question">
+                    <label>3. I was able to understand why things happened.</label>
+                    <div class="likert-scale-5">
+                        <div class="likert-labels">
+                            <span>Strongly disagree</span>
+                            <span>Rather disagree</span>
+                            <span>Neither disagree nor agree</span>
+                            <span>Rather agree</span>
+                            <span>Strongly agree</span>
+                        </div>
+                        <div class="likert-options">
+                            <label><input type="radio" name="pre_trust_q3" value="1" required><span>(1)</span></label>
+                            <label><input type="radio" name="pre_trust_q3" value="2"><span>(2)</span></label>
+                            <label><input type="radio" name="pre_trust_q3" value="3"><span>(3)</span></label>
+                            <label><input type="radio" name="pre_trust_q3" value="4"><span>(4)</span></label>
+                            <label><input type="radio" name="pre_trust_q3" value="5"><span>(5)</span></label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="trust-question">
+                    <label>4. The AI might make sporadic errors.</label>
+                    <div class="likert-scale-5">
+                        <div class="likert-labels">
+                            <span>Strongly disagree</span>
+                            <span>Rather disagree</span>
+                            <span>Neither disagree nor agree</span>
+                            <span>Rather agree</span>
+                            <span>Strongly agree</span>
+                        </div>
+                        <div class="likert-options">
+                            <label><input type="radio" name="pre_trust_q4" value="1" required><span>(1)</span></label>
+                            <label><input type="radio" name="pre_trust_q4" value="2"><span>(2)</span></label>
+                            <label><input type="radio" name="pre_trust_q4" value="3"><span>(3)</span></label>
+                            <label><input type="radio" name="pre_trust_q4" value="4"><span>(4)</span></label>
+                            <label><input type="radio" name="pre_trust_q4" value="5"><span>(5)</span></label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="trust-question">
+                    <label>5. I am confident about the AI's capabilities.</label>
+                    <div class="likert-scale-5">
+                        <div class="likert-labels">
+                            <span>Strongly disagree</span>
+                            <span>Rather disagree</span>
+                            <span>Neither disagree nor agree</span>
+                            <span>Rather agree</span>
+                            <span>Strongly agree</span>
+                        </div>
+                        <div class="likert-options">
+                            <label><input type="radio" name="pre_trust_q5" value="1" required><span>(1)</span></label>
+                            <label><input type="radio" name="pre_trust_q5" value="2"><span>(2)</span></label>
+                            <label><input type="radio" name="pre_trust_q5" value="3"><span>(3)</span></label>
+                            <label><input type="radio" name="pre_trust_q5" value="4"><span>(4)</span></label>
+                            <label><input type="radio" name="pre_trust_q5" value="5"><span>(5)</span></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="submit-pre-trust-btn" class="btn btn-primary modal-submit-btn">Continue to Puzzle →</button>
+        </div>
+    </div>
+    {% endif %}
+    
     <script>
+        const LOA = {{ loa }};
+        
         document.getElementById('begin-puzzle-btn').addEventListener('click', () => {
+            {% if loa != 1 %}
+            // Show pre-task trust survey for LOA 2, 3, 4
+            document.getElementById('pre-trust-survey-modal').style.display = 'flex';
+            {% else %}
+            // For LOA 1, go directly to puzzle
             window.location.href = '/puzzle';
+            {% endif %}
         });
+        
+        {% if loa != 1 %}
+        document.getElementById('submit-pre-trust-btn').addEventListener('click', async () => {
+            // Validate all questions are answered
+            const q1 = document.querySelector('input[name="pre_trust_q1"]:checked');
+            const q2 = document.querySelector('input[name="pre_trust_q2"]:checked');
+            const q3 = document.querySelector('input[name="pre_trust_q3"]:checked');
+            const q4 = document.querySelector('input[name="pre_trust_q4"]:checked');
+            const q5 = document.querySelector('input[name="pre_trust_q5"]:checked');
+            
+            if (!q1 || !q2 || !q3 || !q4 || !q5) {
+                alert('Please answer all trust survey questions before continuing.');
+                return;
+            }
+            
+            // Collect pre-task trust survey answers
+            const preTrustAnswers = {
+                Q1: parseInt(q1.value),
+                Q2: parseInt(q2.value),
+                Q3: parseInt(q3.value),
+                Q4: parseInt(q4.value),
+                Q5: parseInt(q5.value)
+            };
+            
+            try {
+                // Submit pre-task trust survey
+                const response = await fetch('/submit-pre-trust-survey', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pre_trust_survey: preTrustAnswers })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    window.location.href = '/puzzle';
+                } else {
+                    alert('Error submitting survey. Please try again.');
+                }
+            } catch (error) {
+                alert('Error submitting survey. Please try again.');
+            }
+        });
+        {% endif %}
     </script>
 </body>
 </html>

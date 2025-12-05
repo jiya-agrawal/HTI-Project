@@ -143,63 +143,119 @@
                     {% endfor %}
                 </div>
                 
-                <button id="submit-awareness-btn" class="btn btn-primary">Continue to Post-Task Questions →</button>
+                <button id="submit-awareness-btn" class="btn btn-primary">Continue to Trust Survey →</button>
             </div>
         </div>
         
-        <!-- Post-task Questionnaire Modal (shown after awareness quiz) -->
-        <div id="questionnaire-modal" class="modal">
-            <div class="modal-content">
-                <h2>📋 Post-Task Questions</h2>
+        <!-- Post-Task Trust Survey Modal (shown after awareness quiz) -->
+        <div id="trust-survey-modal" class="modal">
+            <div class="modal-content trust-survey-content">
+                <h2>📊 Trust Survey (Post-Task)</h2>
+                <p class="info-text">Based on your experience with the AI in this puzzle, please rate your agreement with the following statements.</p>
                 
-                <div class="question">
-                    <label>How confident are you in the final answer?</label>
-                    <div class="likert-scale">
-                        <span>1 (Not at all)</span>
-                        <input type="radio" name="confidence" value="1" required>
-                        <input type="radio" name="confidence" value="2">
-                        <input type="radio" name="confidence" value="3">
-                        <input type="radio" name="confidence" value="4">
-                        <input type="radio" name="confidence" value="5">
-                        <input type="radio" name="confidence" value="6">
-                        <input type="radio" name="confidence" value="7">
-                        <span>7 (Extremely)</span>
+                <div class="trust-questions-container">
+                    <div class="trust-question">
+                        <label>1. The AI is capable of interpreting situations correctly.</label>
+                        <div class="likert-scale-5">
+                            <div class="likert-labels">
+                                <span>Strongly disagree</span>
+                                <span>Rather disagree</span>
+                                <span>Neither disagree nor agree</span>
+                                <span>Rather agree</span>
+                                <span>Strongly agree</span>
+                            </div>
+                            <div class="likert-options">
+                                <label><input type="radio" name="post_trust_q1" value="1" required><span>(1)</span></label>
+                                <label><input type="radio" name="post_trust_q1" value="2"><span>(2)</span></label>
+                                <label><input type="radio" name="post_trust_q1" value="3"><span>(3)</span></label>
+                                <label><input type="radio" name="post_trust_q1" value="4"><span>(4)</span></label>
+                                <label><input type="radio" name="post_trust_q1" value="5"><span>(5)</span></label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="trust-question">
+                        <label>2. The AI works reliably.</label>
+                        <div class="likert-scale-5">
+                            <div class="likert-labels">
+                                <span>Strongly disagree</span>
+                                <span>Rather disagree</span>
+                                <span>Neither disagree nor agree</span>
+                                <span>Rather agree</span>
+                                <span>Strongly agree</span>
+                            </div>
+                            <div class="likert-options">
+                                <label><input type="radio" name="post_trust_q2" value="1" required><span>(1)</span></label>
+                                <label><input type="radio" name="post_trust_q2" value="2"><span>(2)</span></label>
+                                <label><input type="radio" name="post_trust_q2" value="3"><span>(3)</span></label>
+                                <label><input type="radio" name="post_trust_q2" value="4"><span>(4)</span></label>
+                                <label><input type="radio" name="post_trust_q2" value="5"><span>(5)</span></label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="trust-question">
+                        <label>3. I was able to understand why things happened.</label>
+                        <div class="likert-scale-5">
+                            <div class="likert-labels">
+                                <span>Strongly disagree</span>
+                                <span>Rather disagree</span>
+                                <span>Neither disagree nor agree</span>
+                                <span>Rather agree</span>
+                                <span>Strongly agree</span>
+                            </div>
+                            <div class="likert-options">
+                                <label><input type="radio" name="post_trust_q3" value="1" required><span>(1)</span></label>
+                                <label><input type="radio" name="post_trust_q3" value="2"><span>(2)</span></label>
+                                <label><input type="radio" name="post_trust_q3" value="3"><span>(3)</span></label>
+                                <label><input type="radio" name="post_trust_q3" value="4"><span>(4)</span></label>
+                                <label><input type="radio" name="post_trust_q3" value="5"><span>(5)</span></label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="trust-question">
+                        <label>4. The AI might make sporadic errors.</label>
+                        <div class="likert-scale-5">
+                            <div class="likert-labels">
+                                <span>Strongly disagree</span>
+                                <span>Rather disagree</span>
+                                <span>Neither disagree nor agree</span>
+                                <span>Rather agree</span>
+                                <span>Strongly agree</span>
+                            </div>
+                            <div class="likert-options">
+                                <label><input type="radio" name="post_trust_q4" value="1" required><span>(1)</span></label>
+                                <label><input type="radio" name="post_trust_q4" value="2"><span>(2)</span></label>
+                                <label><input type="radio" name="post_trust_q4" value="3"><span>(3)</span></label>
+                                <label><input type="radio" name="post_trust_q4" value="4"><span>(4)</span></label>
+                                <label><input type="radio" name="post_trust_q4" value="5"><span>(5)</span></label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="trust-question">
+                        <label>5. I am confident about the AI's capabilities.</label>
+                        <div class="likert-scale-5">
+                            <div class="likert-labels">
+                                <span>Strongly disagree</span>
+                                <span>Rather disagree</span>
+                                <span>Neither disagree nor agree</span>
+                                <span>Rather agree</span>
+                                <span>Strongly agree</span>
+                            </div>
+                            <div class="likert-options">
+                                <label><input type="radio" name="post_trust_q5" value="1" required><span>(1)</span></label>
+                                <label><input type="radio" name="post_trust_q5" value="2"><span>(2)</span></label>
+                                <label><input type="radio" name="post_trust_q5" value="3"><span>(3)</span></label>
+                                <label><input type="radio" name="post_trust_q5" value="4"><span>(4)</span></label>
+                                <label><input type="radio" name="post_trust_q5" value="5"><span>(5)</span></label>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                {% if loa != 1 %}
-                <div class="question">
-                    <label>How much did you trust the AI's reasoning?</label>
-                    <div class="likert-scale">
-                        <span>1 (Not at all)</span>
-                        <input type="radio" name="trust" value="1" required>
-                        <input type="radio" name="trust" value="2">
-                        <input type="radio" name="trust" value="3">
-                        <input type="radio" name="trust" value="4">
-                        <input type="radio" name="trust" value="5">
-                        <input type="radio" name="trust" value="6">
-                        <input type="radio" name="trust" value="7">
-                        <span>7 (Completely)</span>
-                    </div>
-                </div>
-                
-                <div class="question">
-                    <label>How aware did you feel of what the AI was doing?</label>
-                    <div class="likert-scale">
-                        <span>1 (Not aware)</span>
-                        <input type="radio" name="awareness" value="1" required>
-                        <input type="radio" name="awareness" value="2">
-                        <input type="radio" name="awareness" value="3">
-                        <input type="radio" name="awareness" value="4">
-                        <input type="radio" name="awareness" value="5">
-                        <input type="radio" name="awareness" value="6">
-                        <input type="radio" name="awareness" value="7">
-                        <span>7 (Very aware)</span>
-                    </div>
-                </div>
-                {% endif %}
-                
-                <button id="submit-questionnaire-btn" class="btn btn-primary modal-submit-btn">Submit & Continue</button>
+                <button id="submit-trust-survey-btn" class="btn btn-primary modal-submit-btn">Submit & Continue</button>
             </div>
         </div>
     </div>
@@ -734,36 +790,46 @@
                     return;
                 }
                 
-                // Hide awareness modal and show questionnaire
+                // Hide awareness modal and show trust survey
                 document.getElementById('awareness-modal').style.display = 'none';
-                document.getElementById('questionnaire-modal').style.display = 'flex';
+                document.getElementById('trust-survey-modal').style.display = 'flex';
             });
         }
         
-        // Questionnaire submission - final submit
-        const submitQuestionnaireBtn = document.getElementById('submit-questionnaire-btn');
-        if (submitQuestionnaireBtn) {
-            submitQuestionnaireBtn.addEventListener('click', async () => {
-                const confidence = document.querySelector('input[name="confidence"]:checked');
-                const trust = LOA !== 1 ? document.querySelector('input[name="trust"]:checked') : null;
-                const awareness = LOA !== 1 ? document.querySelector('input[name="awareness"]:checked') : null;
+        // Trust Survey submission - final submit
+        const submitTrustSurveyBtn = document.getElementById('submit-trust-survey-btn');
+        if (submitTrustSurveyBtn) {
+            submitTrustSurveyBtn.addEventListener('click', async () => {
+                // Validate all trust questions are answered
+                const postTrustQ1 = document.querySelector('input[name="post_trust_q1"]:checked');
+                const postTrustQ2 = document.querySelector('input[name="post_trust_q2"]:checked');
+                const postTrustQ3 = document.querySelector('input[name="post_trust_q3"]:checked');
+                const postTrustQ4 = document.querySelector('input[name="post_trust_q4"]:checked');
+                const postTrustQ5 = document.querySelector('input[name="post_trust_q5"]:checked');
                 
-                if (!confidence || (LOA !== 1 && (!trust || !awareness))) {
-                    alert('Please answer all questions before continuing.');
+                if (!postTrustQ1 || !postTrustQ2 || !postTrustQ3 || !postTrustQ4 || !postTrustQ5) {
+                    alert('Please answer all trust survey questions before continuing.');
                     return;
                 }
                 
                 const decisionLatency = decisionStartTime ? (Date.now() - decisionStartTime) / 1000 : 0;
+                
+                // Collect post-task trust survey answers
+                const postTrustAnswers = {
+                    Q1: parseInt(postTrustQ1.value),
+                    Q2: parseInt(postTrustQ2.value),
+                    Q3: parseInt(postTrustQ3.value),
+                    Q4: parseInt(postTrustQ4.value),
+                    Q5: parseInt(postTrustQ5.value)
+                };
                 
                 const submissionData = {
                     final_answer: finalAnswer,
                     decision_latency: decisionLatency,
                     accepted_advice: acceptedAdvice,
                     overridden: overridden,
-                    confidence_score: parseInt(confidence.value),
-                    trust_score: trust ? parseInt(trust.value) : 0,
-                    awareness_score: awareness ? parseInt(awareness.value) : 0,
-                    awareness_quiz_answers: awarenessAnswers
+                    awareness_quiz_answers: awarenessAnswers,
+                    post_trust_survey: postTrustAnswers
                 };
                 
                 try {

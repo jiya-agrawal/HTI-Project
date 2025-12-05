@@ -39,9 +39,16 @@ class DataLogger:
             "hints_used",
             "edit_distance",
             "final_correctness",
-            "trust_score",
-            "confidence_score",
-            "awareness_score",
+            "pre_trust_Q1",
+            "pre_trust_Q2",
+            "pre_trust_Q3",
+            "pre_trust_Q4",
+            "pre_trust_Q5",
+            "post_trust_Q1",
+            "post_trust_Q2",
+            "post_trust_Q3",
+            "post_trust_Q4",
+            "post_trust_Q5",
             "awareness_quiz_Q1",
             "awareness_quiz_Q2",
             "awareness_quiz_Q3",
@@ -65,6 +72,10 @@ class DataLogger:
         # Extract awareness quiz answers
         awareness_quiz = data.get("awareness_quiz_answers", {})
         
+        # Extract pre and post trust survey answers
+        pre_trust = data.get("pre_trust_survey", {})
+        post_trust = data.get("post_trust_survey", {})
+        
         row = [
             data.get("participant_id", ""),
             data.get("loa_level", ""),
@@ -81,9 +92,16 @@ class DataLogger:
             data.get("hints_used", 0),
             data.get("edit_distance", 0),
             data.get("final_correctness", False),
-            data.get("trust_score", 0),
-            data.get("confidence_score", 0),
-            data.get("awareness_score", 0),
+            pre_trust.get("Q1", ""),
+            pre_trust.get("Q2", ""),
+            pre_trust.get("Q3", ""),
+            pre_trust.get("Q4", ""),
+            pre_trust.get("Q5", ""),
+            post_trust.get("Q1", ""),
+            post_trust.get("Q2", ""),
+            post_trust.get("Q3", ""),
+            post_trust.get("Q4", ""),
+            post_trust.get("Q5", ""),
             awareness_quiz.get("Q1", ""),
             awareness_quiz.get("Q2", ""),
             awareness_quiz.get("Q3", ""),

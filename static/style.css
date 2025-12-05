@@ -812,6 +812,94 @@ textarea:focus {
     color: #999;
 }
 
+/* Trust Survey Styles */
+.trust-survey-content {
+    max-width: 750px;
+}
+
+.trust-questions-container {
+    margin: 20px 0;
+}
+
+.trust-question {
+    margin-bottom: 25px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+}
+
+.trust-question label {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.likert-scale-5 {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.likert-scale-5 .likert-labels {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.likert-scale-5 .likert-labels span {
+    flex: 1;
+    text-align: center;
+    font-size: 11px;
+    color: #555;
+    line-height: 1.3;
+    padding: 0 5px;
+}
+
+.likert-scale-5 .likert-options {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.likert-scale-5 .likert-options label {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px 5px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+    margin: 0;
+    font-weight: normal;
+}
+
+.likert-scale-5 .likert-options label:hover {
+    background-color: #e8e8ff;
+}
+
+.likert-scale-5 .likert-options label input[type="radio"] {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    accent-color: #667eea;
+}
+
+.likert-scale-5 .likert-options label span {
+    font-size: 13px;
+    color: #666;
+    margin-top: 5px;
+}
+
+.likert-scale-5 .likert-options label:has(input:checked) {
+    background-color: #e0e5ff;
+    border: 2px solid #667eea;
+}
+
 .likert-scale {
     display: flex;
     justify-content: space-between;
