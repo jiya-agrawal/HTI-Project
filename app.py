@@ -28,15 +28,12 @@ logger = DataLogger()
 with open('logic_puzzles.json', 'r', encoding='utf-8') as f:
     puzzle_data = json.load(f)
 
-GEMINI_MODEL_CANDIDATES = []
-for model_name in [
-    os.getenv("GEMINI_MODEL_NAME"),
-    "gemini-1.5-flash-latest",
-    "models/gemini-1.5-flash-latest",
-    "gemini-1.5-flash",
-]:
-    if model_name and model_name not in GEMINI_MODEL_CANDIDATES:
-        GEMINI_MODEL_CANDIDATES.append(model_name)
+# Only use the model specified in .env, no fallbacks
+GEMINI_MODEL_NAME = os.getenv("GEMINI_MODEL_NAME")
+if not GEMINI_MODEL_NAME:
+    raise ValueError("GEMINI_MODEL_NAME must be set in .env file")
+
+GEMINI_MODEL_CANDIDATES = [GEMINI_MODEL_NAME]
 
 LOA3_TOTAL_STEPS = 5
 LOA3_MIN_STEPS_BEFORE_FINAL = 3
@@ -196,7 +193,7 @@ def _plan_steps_gemini(puzzle, accepted_steps, start_step_number, expected_final
 
     model = None
     last_model_error = None
-    for candidate_model in GEMINI_MODEL_CANDIDATES or ["gemini-1.5-flash-latest"]:
+    for candidate_model in GEMINI_MODEL_CANDIDATES:
         try:
             model = genai.GenerativeModel(candidate_model)
             break
