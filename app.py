@@ -4,6 +4,8 @@ import json
 import random
 import os
 import re
+import time
+import asyncio
 from datetime import datetime
 from data_logger import DataLogger
 from dotenv import load_dotenv
@@ -151,7 +153,7 @@ def _extract_reasoning_sentences(text):
     return sentences
 
 
-def _plan_steps_gemini(puzzle, accepted_steps, start_step_number, expected_final_sequence, is_faulty, puzzle_elements):
+async def _plan_steps_gemini(puzzle, accepted_steps, start_step_number, expected_final_sequence, is_faulty, puzzle_elements):
     remaining_numbers = list(range(start_step_number, LOA3_TOTAL_STEPS + 1))
     accepted_text = (
         "\n".join(step["step_text"] for step in accepted_steps)
@@ -206,10 +208,18 @@ def _plan_steps_gemini(puzzle, accepted_steps, start_step_number, expected_final
     import json
 
     for attempt in range(LOA3_MAX_MODEL_ATTEMPTS):
-        response = model.generate_content(
-            prompt,
-            generation_config={"response_mime_type": "application/json", "temperature": 0.4},
-        )
+        if attempt > 0:
+            await asyncio.sleep(2)  # Wait 2 seconds before retrying to avoid rate limits
+
+        # Run synchronous generation in a separate thread to avoid blocking the event loop
+        # and to avoid "Event loop is closed" issues with the async gRPC implementation.
+        def _call_gemini_sync():
+            return model.generate_content(
+                prompt,
+                generation_config={"response_mime_type": "application/json", "temperature": 0.4},
+            )
+
+        response = await asyncio.to_thread(_call_gemini_sync)
         try:
             data = json.loads(response.text)
         except json.JSONDecodeError as decode_err:
@@ -280,7 +290,7 @@ def _plan_steps_fallback(puzzle, accepted_steps, start_step_number, expected_fin
     return [step for step in plan if step["step_number"] >= start_step_number]
 
 
-def _plan_steps(puzzle, loa3_state, start_step_number):
+async def _plan_steps(puzzle, loa3_state, start_step_number):
     is_faulty = loa3_state.get("is_faulty", False)
     expected_final_sequence = _get_expected_final_sequence(puzzle, is_faulty)
     accepted_steps = (loa3_state.get("all_steps") or [])[:start_step_number - 1]
@@ -291,7 +301,7 @@ def _plan_steps(puzzle, loa3_state, start_step_number):
 
     if GEMINI_CONFIGURED:
         try:
-            return _plan_steps_gemini(
+            return await _plan_steps_gemini(
                 puzzle,
                 accepted_steps,
                 start_step_number,
@@ -500,7 +510,7 @@ def _ensure_loa3_state(puzzle_key, is_faulty):
     return loa3_state
 
 
-def _generate_loa3_step(puzzle, loa3_state, action, step_number=None):
+async def _generate_loa3_step(puzzle, loa3_state, action, step_number=None):
     """
     Generate or reveal LOA 3 reasoning steps using a fixed-length plan.
     """
@@ -534,7 +544,7 @@ def _generate_loa3_step(puzzle, loa3_state, action, step_number=None):
         loa3_state["all_steps"] = []
 
     if action != "retry" and not loa3_state.get("all_steps"):
-        loa3_state["all_steps"] = _plan_steps(puzzle, loa3_state, 1)
+        loa3_state["all_steps"] = await _plan_steps(puzzle, loa3_state, 1)
 
     if action == "retry":
         target_step = step_number or (loa3_state.get("current_step_index", -1) + 1)
@@ -550,7 +560,7 @@ def _generate_loa3_step(puzzle, loa3_state, action, step_number=None):
         loa3_state["total_retries"] += 1
 
         try:
-            new_plan = _plan_steps(puzzle, loa3_state, target_step)
+            new_plan = await _plan_steps(puzzle, loa3_state, target_step)
         except Exception as e:
             loa3_state["retries_this_step"] -= 1
             loa3_state["total_retries"] -= 1
@@ -786,7 +796,7 @@ def log_interaction():
 
 
 @app.route('/loa3/start', methods=['POST'])
-def loa3_start():
+async def loa3_start():
     """Initialize LOA 3 step-by-step reasoning and return the first step."""
     if 'participant_id' not in session:
         return jsonify({"error": "No active session"}), 400
@@ -796,13 +806,13 @@ def loa3_start():
         return jsonify({"error": "LOA 3 puzzle not active"}), 400
 
     loa3_state = _ensure_loa3_state(puzzle_key, use_faulty)
-    result = _generate_loa3_step(puzzle, loa3_state, action="start")
+    result = await _generate_loa3_step(puzzle, loa3_state, action="start")
 
     return jsonify({"success": True, **result})
 
 
 @app.route('/loa3/step', methods=['POST'])
-def loa3_step():
+async def loa3_step():
     """Advance or retry a LOA 3 reasoning step based on participant input."""
     if 'participant_id' not in session:
         return jsonify({"error": "No active session"}), 400
@@ -818,7 +828,7 @@ def loa3_step():
 
     loa3_state = _ensure_loa3_state(puzzle_key, use_faulty)
     step_number = data.get("step_number")
-    result = _generate_loa3_step(puzzle, loa3_state, action=action, step_number=step_number)
+    result = await _generate_loa3_step(puzzle, loa3_state, action=action, step_number=step_number)
 
     if "error" in result:
         return jsonify({"success": False, **result}), 400
