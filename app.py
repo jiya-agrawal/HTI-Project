@@ -133,7 +133,7 @@ def _validate_loa3_plan(steps, required_numbers, expected_final_sequence, puzzle
             if not is_final:
                 return False, "final_step_missing_flag"
             if final_sequence != expected_final_sequence:
-                return False, "final_sequence_mismatch"
+                return False, f"final_sequence_mismatch: expected '{expected_final_sequence}', got '{final_sequence}'"
         else:
             if is_final:
                 return False, "non_final_marked_final"
@@ -171,9 +171,9 @@ async def _plan_steps_gemini(puzzle, accepted_steps, start_step_number, expected
         "- Start with the literal prefix \"Step X:\" where X is the step number.\n"
         "- Contain only 1-2 sentences describing a single incremental deduction.\n"
         "- Avoid revealing the final arrangement until Step {LOA3_TOTAL_STEPS}.\n"
-        f"- The final arrangement MUST be exactly: {expected_final_sequence}.\n"
-        f"- Step {LOA3_TOTAL_STEPS} must include the phrase \"This is my final step\" and set is_final=true "
-        "with final_sequence equal to that arrangement.\n"
+        f"- The final arrangement MUST be exactly: \"{expected_final_sequence}\".\n"
+        f"- Step {LOA3_TOTAL_STEPS} must include the phrase \"This is my final step\" and set is_final=true.\n"
+        f"- The 'final_sequence' field in the JSON for Step {LOA3_TOTAL_STEPS} must be EXACTLY the string \"{expected_final_sequence}\" (without a trailing period).\n"
         "- For all earlier steps, set is_final=false and final_sequence=null.\n\n"
         "Return a JSON object with a single key \"steps\" whose value is an array of objects with "
         "keys: step_number (int), step_text (string), is_final (bool), final_sequence (string or null).\n"
